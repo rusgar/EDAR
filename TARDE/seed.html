@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Generar datos de prueba</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; max-width: 600px; margin: 60px auto; text-align: center; }
+        h1 { color: #1e3a8a; }
+        p { color: #64748b; margin: 20px 0; }
+        .btn { padding: 14px 28px; font-size: 1rem; border: none; border-radius: 8px; cursor: pointer; font-weight: 700; color: white; }
+        .btn-add { background: #16a34a; }
+        .btn-clear { background: #dc2626; }
+        .result { margin-top: 20px; padding: 16px; border-radius: 8px; background: #f0fdf4; color: #16a34a; font-weight: 600; display: none; }
+    </style>
+</head>
+<body>
+    <h1>Generador de datos de prueba</h1>
+    <p>Esto crea 10 registros secuenciales en el navegador para probar el Excel.</p>
+    <p>
+        <button class="btn btn-add" onclick="generarDatos()">Generar 10 registros</button>
+        <button class="btn btn-clear" onclick="borrarDatos()">Borrar todo</button>
+    </p>
+    <div id="resultado" class="result"></div>
+
+    <script>
+        const rand = a => a[Math.floor(Math.random() * a.length)];
+        const turnos = ['Mañanas', 'Tardes', 'Noches'];
+        const operarios = ['Luis', 'María', 'Carlos', 'Ana', 'Jorge', 'Sara'];
+        const siNo = () => rand(['SI', 'NO']);
+        const scada = () => rand(['R', 'L', 'M', 'A']);
+        const num = () => String(Math.floor(Math.random() * 8) + 1);
+
+        function makeDesarenador(letter) {
+            const puente = {
+                scada: scada(), horas: (Math.random() * 10).toFixed(1),
+                desplazamiento: siNo(), anomalias: siNo(),
+                guias_ruedas: siNo(), finales_carrera: siNo(),
+                rozamientos: siNo(), lonas_limpias: siNo(),
+                lonas_sujeciones: siNo()
+            };
+            if (letter !== 'C') puente.rasquetas = siNo();
+            return {
+                compuerta_entrada: { scada: scada(), limpieza: siNo(), ruidos: siNo(), arranques: num() },
+                puente: puente,
+                bomba_arenas: { funcionamiento: siNo(), ruidos_fugas: siNo() },
+                aireadores: { scada: scada(), ruidos: siNo(), horas: { a: num(), b: num(), c: num(), d: num(), e: num() } },
+                compuerta_grasas: { scada: scada(), arranques: num(), limpieza: siNo(), ruidos: siNo(), electrovalvula: siNo(), electrovalvula_arranques: num() }
+            };
+        }
+
+        function generarDatos() {
+            const list = JSON.parse(localStorage.getItem('desarenadores_data') || '[]');
+            const hoy = new Date();
+            for (let i = 0; i < 10; i++) {
+                const d = new Date(hoy);
+                d.setDate(hoy.getDate() - (9 - i));
+                const ts = new Date(d);
+                ts.setHours(6 + (i % 12), 30, 0);
+                list.push({
+                    id: 'CHECK_TEST_' + (i + 1),
+                    fecha: d.toISOString().split('T')[0],
+                    turno: rand(turnos),
+                    operario1: rand(operarios),
+                    operario2: Math.random() < 0.5 ? rand(operarios) : '',
+                    desarenador_A: makeDesarenador('A'),
+                    desarenador_B: makeDesarenador('B'),
+                    desarenador_C: makeDesarenador('C'),
+                    contenedor_arenas_grasas: {
+                        tubo_agua: siNo(), retirar_agua: siNo(),
+                        cant_agua: Math.random() < 0.5 ? num() + ' m3' : '',
+                        vaciado_gavetas: siNo(),
+                        cant_gavetas: Math.random() < 0.5 ? num() + ' gavetas' : ''
+                    },
+                    observaciones_generales: rand([
+                        'Sin incidencias destacables.',
+                        'Puente vibra ligeramente al avanzar.',
+                        'Electroválvula con pequeño retardo de apertura.',
+                        'Se repuso grasa en ruedas del puente.',
+                        'Lonas con desgaste visible, pendiente de reponer.'
+                    ]),
+                    timestamp: ts.toISOString()
+                });
+            }
+            localStorage.setItem('desarenadores_data', JSON.stringify(list));
+            const r = document.getElementById('resultado');
+            r.style.display = 'block';
+            r.textContent = '10 registros generados. Ya puedes abrir el checklist y pulsar Exportar Excel.';
+        }
+
+        function borrarDatos() {
+            localStorage.removeItem('desarenadores_data');
+            const r = document.getElementById('resultado');
+            r.style.display = 'block';
+            r.textContent = 'Registros borrados.';
+        }
+    </script>
+</body>
+</html>

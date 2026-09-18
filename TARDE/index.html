@@ -1,0 +1,994 @@
+
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checklist Mantenimiento Preventivo - Desarenadores | EDAR Gijón Este</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <div class="header-content">
+            <div class="header-text">
+                <h1>EDAR GIJÓN ESTE - Grupo Tragsa</h1>
+                <p>Checklist Digital de Mantenimiento Preventivo - Desarenadores</p>
+            </div>
+            <img src="img/logo_cabecera.png" alt="Grupo Tragsa" class="header-logo">
+        </div>
+    </header>
+
+    <form id="checklistForm">
+        <!-- DATOS CABECERA -->
+        <div class="card">
+            <div class="card-title">Información del Turno y Control</div>
+            <div class="grid-2">
+                <div class="form-group">
+                    <label>Fecha</label>
+                    <input type="date" id="fecha" required>
+                </div>
+                <div class="form-group">
+                    <label>Turno</label>
+                    <select id="turno" required>
+                        <option value="">Seleccionar turno...</option>
+                        <option value="Mañanas">Mañanas</option>
+                        <option value="Tardes">Tardes</option>
+                        <option value="Noches">Noches</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Operario 1</label>
+                    <select id="operario1" required onchange="filterOperario2()">
+                        <option value="">Seleccionar operario...</option>
+                        <option value="Ana">Ana</option>
+                        <option value="Carlos">Carlos</option>
+                        <option value="Edu">Edu</option>
+                        <option value="Luis">Luis</option>
+                        <option value="Sara">Sara</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Operario 2</label>
+                    <select id="operario2">
+                        <option value="">Seleccionar operario...</option>
+                        <option value="Ana">Ana</option>
+                        <option value="Carlos">Carlos</option>
+                        <option value="Edu">Edu</option>
+                        <option value="Luis">Luis</option>
+                        <option value="Sara">Sara</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- PESTAÑAS PARA DESARENADORES Y CONTENEDOR -->
+        <div class="tabs">
+            <button type="button" class="tab-btn active" onclick="switchTab('desarenadorA', this)">Desarenador A</button>
+            <button type="button" class="tab-btn" onclick="switchTab('desarenadorB', this)">Desarenador B</button>
+            <button type="button" class="tab-btn" onclick="switchTab('desarenadorC', this)">Desarenador C</button>
+            <button type="button" class="tab-btn" onclick="switchTab('contenedor', this)">Contenedores y Grasas</button>
+            <button type="button" class="tab-btn" onclick="switchTab('resumenTab', this)">Registros Guardados</button>
+        </div>
+
+        <!-- DESARENADOR A -->
+        <div id="desarenadorA" class="tab-content active">
+            <!-- COMPUERTA ENTRADA A -->
+            <div class="card">
+                <div class="section-header">COMPUERTA ENTRADA (413A_VM001)</div>
+                        <div class="equipment-status">
+                            <label>Estado:</label>
+                            <select class="status-select" onchange="toggleEquipment(this)">
+                                <option value="funcionando">Funcionando</option>
+                                <option value="parado">Parado</option>
+                                <option value="defecto">Defecto electrico</option>
+                                <option value="no_funciona">No funciona</option>
+                            </select>
+                        </div>
+                <table>
+                    <thead><tr><th>Punto de Inspección</th><th>Control / Estado</th><th>Dato Adicional</th></tr></thead>
+                    <tbody>
+                        <tr>
+                            <td>1. Estado del equipo en el SCADA</td>
+                            <td>
+                                <div class="scada-group">
+                                    <label class="checkbox-label"><input type="checkbox" name="a_comp_scada" value="R"> R</label>
+                                    <label class="checkbox-label"><input type="checkbox" name="a_comp_scada" value="L"> L</label>
+                                    <label class="checkbox-label"><input type="checkbox" name="a_comp_scada" value="M"> M</label>
+                                    <label class="checkbox-label"><input type="checkbox" name="a_comp_scada" value="A"> A</label>
+                                </div>
+                            </td>
+                            <td><input type="number" id="a_comp_arranques" placeholder="Nº arranques"></td>
+                        </tr>
+                        <tr>
+                            <td>2. Inspección visual y limpieza correcta</td>
+                            <td>
+                                <label class="radio-label"><input type="radio" name="a_comp_limpieza" value="SI"> SI</label>
+                                <label class="radio-label"><input type="radio" name="a_comp_limpieza" value="NO"> NO</label>
+                            </td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>3. Control de ruidos en funcionamiento (si procede)</td>
+                            <td>
+                                <label class="radio-label"><input type="radio" name="a_comp_ruidos" value="SI"> SI</label>
+                                <label class="radio-label"><input type="radio" name="a_comp_ruidos" value="NO"> NO</label>
+                            </td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="section-header">PUENTE DESARENADOR (413A_QP001)</div>
+                        <div class="equipment-status">
+                            <label>Estado:</label>
+                            <select class="status-select" onchange="toggleEquipment(this)">
+                                <option value="funcionando">Funcionando</option>
+                                <option value="parado">Parado</option>
+                                <option value="defecto">Defecto electrico</option>
+                                <option value="no_funciona">No funciona</option>
+                            </select>
+                        </div>
+                <table>
+                    <thead><tr><th>Punto de Inspección</th><th>Control</th><th>Observaciones / Horas</th></tr></thead>
+                    <tbody>
+                        <tr>
+                            <td>1. Estado del equipo en el SCADA</td>
+                            <td>
+                                <div class="scada-group">
+                                    <label class="checkbox-label"><input type="checkbox" name="a_puente_scada" value="R"> R</label>
+                                    <label class="checkbox-label"><input type="checkbox" name="a_puente_scada" value="L"> L</label>
+                                    <label class="checkbox-label"><input type="checkbox" name="a_puente_scada" value="M"> M</label>
+                                    <label class="checkbox-label"><input type="checkbox" name="a_puente_scada" value="A"> A</label>
+                                </div>
+                            </td>
+                            <td><input type="number" id="a_puente_horas" placeholder="Nº horas"></td>
+                        </tr>
+                        <tr>
+                            <td>2. El equipo se desplaza correctamente</td>
+                            <td>
+                                <label class="radio-label"><input type="radio" name="a_puente_despl" value="SI"> SI</label>
+                                <label class="radio-label"><input type="radio" name="a_puente_despl" value="NO"> NO</label>
+                            </td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>3. Las rasquetas suben y bajan correctamente</td>
+                            <td>
+                                <label class="radio-label"><input type="radio" name="a_puente_rasquetas" value="SI"> SI</label>
+                                <label class="radio-label"><input type="radio" name="a_puente_rasquetas" value="NO"> NO</label>
+                            </td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>4. Presencia de ruidos, fugas o anomalías</td>
+                            <td>
+                                <label class="radio-label"><input type="radio" name="a_puente_anomalias" value="SI"> SI</label>
+                                <label class="radio-label"><input type="radio" name="a_puente_anomalias" value="NO"> NO</label>
+                            </td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>5. Correcto estado de rasqueta, ruedas, guía</td>
+                            <td>
+                                <label class="radio-label"><input type="radio" name="a_puente_guias" value="SI"> SI</label>
+                                <label class="radio-label"><input type="radio" name="a_puente_guias" value="NO"> NO</label>
+                            </td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>6. Correcto estado de finales de carrera</td>
+                            <td>
+                                <label class="radio-label"><input type="radio" name="a_puente_fcarrera" value="SI"> SI</label>
+                                <label class="radio-label"><input type="radio" name="a_puente_fcarrera" value="NO"> NO</label>
+                            </td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>7. Presencia de rozamientos</td>
+                            <td>
+                                <label class="radio-label"><input type="radio" name="a_puente_rozamientos" value="SI"> SI</label>
+                                <label class="radio-label"><input type="radio" name="a_puente_rozamientos" value="NO"> NO</label>
+                            </td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>8. Las lonas se encuentran limpias y en buen estado</td>
+                            <td>
+                                <label class="radio-label"><input type="radio" name="a_puente_lonas" value="SI"> SI</label>
+                                <label class="radio-label"><input type="radio" name="a_puente_lonas" value="NO"> NO</label>
+                            </td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>9. Sujeciones de las lonas correctas</td>
+                            <td>
+                                <label class="radio-label"><input type="radio" name="a_puente_sujeciones" value="SI"> SI</label>
+                                <label class="radio-label"><input type="radio" name="a_puente_sujeciones" value="NO"> NO</label>
+                            </td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="section-header">BOMBA EXTRACCIÓN ARENAS (413A_PO001)</div>
+                        <div class="equipment-status">
+                            <label>Estado:</label>
+                            <select class="status-select" onchange="toggleEquipment(this)">
+                                <option value="funcionando">Funcionando</option>
+                                <option value="parado">Parado</option>
+                                <option value="defecto">Defecto electrico</option>
+                                <option value="no_funciona">No funciona</option>
+                            </select>
+                        </div>
+                <table>
+                    <thead><tr><th>Punto de Inspección</th><th>Control</th><th>Observaciones</th></tr></thead>
+                    <tbody>
+                        <tr>
+                            <td>1. El equipo funciona correctamente. Extrae agua</td>
+                            <td>
+                                <label class="radio-label"><input type="radio" name="a_bomba_func" value="SI"> SI</label>
+                                <label class="radio-label"><input type="radio" name="a_bomba_func" value="NO"> NO</label>
+                            </td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>2. Presencia de ruidos, fugas o anomalías</td>
+                            <td>
+                                <label class="radio-label"><input type="radio" name="a_bomba_ruidos" value="SI"> SI</label>
+                                <label class="radio-label"><input type="radio" name="a_bomba_ruidos" value="NO"> NO</label>
+                            </td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="section-header">AIREADORES AEROFLO (413A_AA001A,B,C,D,E)</div>
+                        <div class="equipment-status">
+                            <label>Estado:</label>
+                            <select class="status-select" onchange="toggleEquipment(this)">
+                                <option value="funcionando">Funcionando</option>
+                                <option value="parado">Parado</option>
+                                <option value="defecto">Defecto electrico</option>
+                                <option value="no_funciona">No funciona</option>
+                            </select>
+                        </div>
+                <table>
+                    <thead><tr><th>Punto de Inspección</th><th>Control</th><th>Observaciones</th></tr></thead>
+                    <tbody>
+                        <tr>
+                            <td>1. Estado del equipo en el SCADA</td>
+                            <td>
+                                <div class="scada-group">
+                                    <label class="checkbox-label"><input type="checkbox" name="a_aireadores_scada" value="R"> R</label>
+                                    <label class="checkbox-label"><input type="checkbox" name="a_aireadores_scada" value="L"> L</label>
+                                    <label class="checkbox-label"><input type="checkbox" name="a_aireadores_scada" value="M"> M</label>
+                                    <label class="checkbox-label"><input type="checkbox" name="a_aireadores_scada" value="A"> A</label>
+                                </div>
+                            </td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>2. Presencia de ruidos o anomalías</td>
+                            <td>
+                                <label class="radio-label"><input type="radio" name="a_aireadores_ruidos" value="SI"> SI</label>
+                                <label class="radio-label"><input type="radio" name="a_aireadores_ruidos" value="NO"> NO</label>
+                            </td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="form-group" style="margin-top: 10px;">
+                    <label>3. Horas de funcionamiento Aireadores A:</label>
+                    <div class="grid-5">
+                        <input type="number" id="a_horas_a" placeholder="A (hrs)">
+                        <input type="number" id="a_horas_b" placeholder="B (hrs)">
+                        <input type="number" id="a_horas_c" placeholder="C (hrs)">
+                        <input type="number" id="a_horas_d" placeholder="D (hrs)">
+                        <input type="number" id="a_horas_e" placeholder="E (hrs)">
+                    </div>
+                </div>
+
+                <div class="section-header">COMPUERTA DE GRASAS (413A_VM002)</div>
+                        <div class="equipment-status">
+                            <label>Estado:</label>
+                            <select class="status-select" onchange="toggleEquipment(this)">
+                                <option value="funcionando">Funcionando</option>
+                                <option value="parado">Parado</option>
+                                <option value="defecto">Defecto electrico</option>
+                                <option value="no_funciona">No funciona</option>
+                            </select>
+                        </div>
+                <table>
+                    <thead><tr><th>Punto de Inspección</th><th>Control</th><th>Dato Adicional</th></tr></thead>
+                    <tbody>
+                        <tr>
+                            <td>1. Estado del equipo en el SCADA</td>
+                            <td>
+                                <div class="scada-group">
+                                    <label class="checkbox-label"><input type="checkbox" name="a_grasas_scada" value="R"> R</label>
+                                    <label class="checkbox-label"><input type="checkbox" name="a_grasas_scada" value="L"> L</label>
+                                    <label class="checkbox-label"><input type="checkbox" name="a_grasas_scada" value="M"> M</label>
+                                    <label class="checkbox-label"><input type="checkbox" name="a_grasas_scada" value="A"> A</label>
+                                </div>
+                            </td>
+                            <td><input type="number" id="a_grasas_arranques1" placeholder="Nº arranques"></td>
+                        </tr>
+                        <tr>
+                            <td>2. Inspección visual del equipo y limpieza correcto</td>
+                            <td>
+                                <label class="radio-label"><input type="radio" name="a_grasas_limpieza" value="SI"> SI</label>
+                                <label class="radio-label"><input type="radio" name="a_grasas_limpieza" value="NO"> NO</label>
+                            </td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>3. Control de ruidos cuando esté en funcionamiento</td>
+                            <td>
+                                <label class="radio-label"><input type="radio" name="a_grasas_ruidos" value="SI"> SI</label>
+                                <label class="radio-label"><input type="radio" name="a_grasas_ruidos" value="NO"> NO</label>
+                            </td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>4. Verificar correcto funcionamiento electroválvula limpieza</td>
+                            <td>
+                                <label class="radio-label"><input type="radio" name="a_grasas_electrov" value="SI"> SI</label>
+                                <label class="radio-label"><input type="radio" name="a_grasas_electrov" value="NO"> NO</label>
+                            </td>
+                            <td><input type="number" id="a_grasas_arranques2" placeholder="Nº arranques EV"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- DESARENADOR B -->
+        <div id="desarenadorB" class="tab-content">
+            <div class="card">
+                <div class="section-header">COMPUERTA ENTRADA (413B_VM001)</div>
+                        <div class="equipment-status">
+                            <label>Estado:</label>
+                            <select class="status-select" onchange="toggleEquipment(this)">
+                                <option value="funcionando">Funcionando</option>
+                                <option value="parado">Parado</option>
+                                <option value="defecto">Defecto electrico</option>
+                                <option value="no_funciona">No funciona</option>
+                            </select>
+                        </div>
+                <table>
+                    <thead><tr><th>Punto de Inspección</th><th>Control / Estado</th><th>Dato Adicional</th></tr></thead>
+                    <tbody>
+                        <tr>
+                            <td>1. Estado del equipo en el SCADA</td>
+                            <td>
+                                <div class="scada-group">
+                                    <label class="checkbox-label"><input type="checkbox" name="b_comp_scada" value="R"> R</label>
+                                    <label class="checkbox-label"><input type="checkbox" name="b_comp_scada" value="L"> L</label>
+                                    <label class="checkbox-label"><input type="checkbox" name="b_comp_scada" value="M"> M</label>
+                                    <label class="checkbox-label"><input type="checkbox" name="b_comp_scada" value="A"> A</label>
+                                </div>
+                            </td>
+                            <td><input type="number" id="b_comp_arranques" placeholder="Nº arranques"></td>
+                        </tr>
+                        <tr>
+                            <td>2. Inspección visual y limpieza correcta</td>
+                            <td>
+                                <label class="radio-label"><input type="radio" name="b_comp_limpieza" value="SI"> SI</label>
+                                <label class="radio-label"><input type="radio" name="b_comp_limpieza" value="NO"> NO</label>
+                            </td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>3. Control de ruidos en funcionamiento</td>
+                            <td>
+                                <label class="radio-label"><input type="radio" name="b_comp_ruidos" value="SI"> SI</label>
+                                <label class="radio-label"><input type="radio" name="b_comp_ruidos" value="NO"> NO</label>
+                            </td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="section-header">PUENTE DESARENADOR (413B_QP001)</div>
+                        <div class="equipment-status">
+                            <label>Estado:</label>
+                            <select class="status-select" onchange="toggleEquipment(this)">
+                                <option value="funcionando">Funcionando</option>
+                                <option value="parado">Parado</option>
+                                <option value="defecto">Defecto electrico</option>
+                                <option value="no_funciona">No funciona</option>
+                            </select>
+                        </div>
+                <table>
+                    <thead><tr><th>Punto de Inspección</th><th>Control</th><th>Observaciones / Horas</th></tr></thead>
+                    <tbody>
+                        <tr>
+                            <td>1. Estado del equipo en el SCADA</td>
+                            <td>
+                                <div class="scada-group">
+                                    <label class="checkbox-label"><input type="checkbox" name="b_puente_scada" value="R"> R</label>
+                                    <label class="checkbox-label"><input type="checkbox" name="b_puente_scada" value="L"> L</label>
+                                    <label class="checkbox-label"><input type="checkbox" name="b_puente_scada" value="M"> M</label>
+                                    <label class="checkbox-label"><input type="checkbox" name="b_puente_scada" value="A"> A</label>
+                                </div>
+                            </td>
+                            <td><input type="number" id="b_puente_horas" placeholder="Nº horas"></td>
+                        </tr>
+                        <tr>
+                            <td>2. El equipo se desplaza correctamente</td>
+                            <td>
+                                <label class="radio-label"><input type="radio" name="b_puente_despl" value="SI"> SI</label>
+                                <label class="radio-label"><input type="radio" name="b_puente_despl" value="NO"> NO</label>
+                            </td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>3. Las rasquetas suben y bajan correctamente</td>
+                            <td>
+                                <label class="radio-label"><input type="radio" name="b_puente_rasquetas" value="SI"> SI</label>
+                                <label class="radio-label"><input type="radio" name="b_puente_rasquetas" value="NO"> NO</label>
+                            </td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>4. Presencia de ruidos, fugas o anomalías</td>
+                            <td>
+                                <label class="radio-label"><input type="radio" name="b_puente_anomalias" value="SI"> SI</label>
+                                <label class="radio-label"><input type="radio" name="b_puente_anomalias" value="NO"> NO</label>
+                            </td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>5. Correcto estado de rasqueta, ruedas, guía</td>
+                            <td>
+                                <label class="radio-label"><input type="radio" name="b_puente_guias" value="SI"> SI</label>
+                                <label class="radio-label"><input type="radio" name="b_puente_guias" value="NO"> NO</label>
+                            </td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>6. Correcto estado de finales de carrera</td>
+                            <td>
+                                <label class="radio-label"><input type="radio" name="b_puente_fcarrera" value="SI"> SI</label>
+                                <label class="radio-label"><input type="radio" name="b_puente_fcarrera" value="NO"> NO</label>
+                            </td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>7. Presencia de rozamientos</td>
+                            <td>
+                                <label class="radio-label"><input type="radio" name="b_puente_rozamientos" value="SI"> SI</label>
+                                <label class="radio-label"><input type="radio" name="b_puente_rozamientos" value="NO"> NO</label>
+                            </td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>8. Las lonas se encuentran limpias y en buen estado</td>
+                            <td>
+                                <label class="radio-label"><input type="radio" name="b_puente_lonas" value="SI"> SI</label>
+                                <label class="radio-label"><input type="radio" name="b_puente_lonas" value="NO"> NO</label>
+                            </td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>9. Sujeciones de las lonas correctas</td>
+                            <td>
+                                <label class="radio-label"><input type="radio" name="b_puente_sujeciones" value="SI"> SI</label>
+                                <label class="radio-label"><input type="radio" name="b_puente_sujeciones" value="NO"> NO</label>
+                            </td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="section-header">BOMBA EXTRACCIÓN ARENAS (413B_PO001)</div>
+                        <div class="equipment-status">
+                            <label>Estado:</label>
+                            <select class="status-select" onchange="toggleEquipment(this)">
+                                <option value="funcionando">Funcionando</option>
+                                <option value="parado">Parado</option>
+                                <option value="defecto">Defecto electrico</option>
+                                <option value="no_funciona">No funciona</option>
+                            </select>
+                        </div>
+                <table>
+                    <thead><tr><th>Punto de Inspección</th><th>Control</th><th>Observaciones</th></tr></thead>
+                    <tbody>
+                        <tr>
+                            <td>1. El equipo funciona correctamente. Extrae agua</td>
+                            <td>
+                                <label class="radio-label"><input type="radio" name="b_bomba_func" value="SI"> SI</label>
+                                <label class="radio-label"><input type="radio" name="b_bomba_func" value="NO"> NO</label>
+                            </td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>2. Presencia de ruidos, fugas o anomalías</td>
+                            <td>
+                                <label class="radio-label"><input type="radio" name="b_bomba_ruidos" value="SI"> SI</label>
+                                <label class="radio-label"><input type="radio" name="b_bomba_ruidos" value="NO"> NO</label>
+                            </td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="section-header">AIREADORES AEROFLO (413B_AA001A,B,C,D,E)</div>
+                        <div class="equipment-status">
+                            <label>Estado:</label>
+                            <select class="status-select" onchange="toggleEquipment(this)">
+                                <option value="funcionando">Funcionando</option>
+                                <option value="parado">Parado</option>
+                                <option value="defecto">Defecto electrico</option>
+                                <option value="no_funciona">No funciona</option>
+                            </select>
+                        </div>
+                <table>
+                    <thead><tr><th>Punto de Inspección</th><th>Control</th><th>Observaciones</th></tr></thead>
+                    <tbody>
+                        <tr>
+                            <td>1. Estado del equipo en el SCADA</td>
+                            <td>
+                                <div class="scada-group">
+                                    <label class="checkbox-label"><input type="checkbox" name="b_aireadores_scada" value="R"> R</label>
+                                    <label class="checkbox-label"><input type="checkbox" name="b_aireadores_scada" value="L"> L</label>
+                                    <label class="checkbox-label"><input type="checkbox" name="b_aireadores_scada" value="M"> M</label>
+                                    <label class="checkbox-label"><input type="checkbox" name="b_aireadores_scada" value="A"> A</label>
+                                </div>
+                            </td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>2. Presencia de ruidos o anomalías</td>
+                            <td>
+                                <label class="radio-label"><input type="radio" name="b_aireadores_ruidos" value="SI"> SI</label>
+                                <label class="radio-label"><input type="radio" name="b_aireadores_ruidos" value="NO"> NO</label>
+                            </td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="form-group" style="margin-top: 10px;">
+                    <label>3. Horas de funcionamiento Aireadores B:</label>
+                    <div class="grid-5">
+                        <input type="number" id="b_horas_a" placeholder="A (hrs)">
+                        <input type="number" id="b_horas_b" placeholder="B (hrs)">
+                        <input type="number" id="b_horas_c" placeholder="C (hrs)">
+                        <input type="number" id="b_horas_d" placeholder="D (hrs)">
+                        <input type="number" id="b_horas_e" placeholder="E (hrs)">
+                    </div>
+                </div>
+
+                <div class="section-header">COMPUERTA DE GRASAS (413B_VM002)</div>
+                        <div class="equipment-status">
+                            <label>Estado:</label>
+                            <select class="status-select" onchange="toggleEquipment(this)">
+                                <option value="funcionando">Funcionando</option>
+                                <option value="parado">Parado</option>
+                                <option value="defecto">Defecto electrico</option>
+                                <option value="no_funciona">No funciona</option>
+                            </select>
+                        </div>
+                <table>
+                    <thead><tr><th>Punto de Inspección</th><th>Control</th><th>Dato Adicional</th></tr></thead>
+                    <tbody>
+                        <tr>
+                            <td>1. Estado del equipo en el SCADA</td>
+                            <td>
+                                <div class="scada-group">
+                                    <label class="checkbox-label"><input type="checkbox" name="b_grasas_scada" value="R"> R</label>
+                                    <label class="checkbox-label"><input type="checkbox" name="b_grasas_scada" value="L"> L</label>
+                                    <label class="checkbox-label"><input type="checkbox" name="b_grasas_scada" value="M"> M</label>
+                                    <label class="checkbox-label"><input type="checkbox" name="b_grasas_scada" value="A"> A</label>
+                                </div>
+                            </td>
+                            <td><input type="number" id="b_grasas_arranques1" placeholder="Nº arranques"></td>
+                        </tr>
+                        <tr>
+                            <td>2. Inspección visual del equipo y limpieza correcto</td>
+                            <td>
+                                <label class="radio-label"><input type="radio" name="b_grasas_limpieza" value="SI"> SI</label>
+                                <label class="radio-label"><input type="radio" name="b_grasas_limpieza" value="NO"> NO</label>
+                            </td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>3. Control de ruidos cuando esté en funcionamiento</td>
+                            <td>
+                                <label class="radio-label"><input type="radio" name="b_grasas_ruidos" value="SI"> SI</label>
+                                <label class="radio-label"><input type="radio" name="b_grasas_ruidos" value="NO"> NO</label>
+                            </td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>4. Verificar correcto funcionamiento electroválvula limpieza</td>
+                            <td>
+                                <label class="radio-label"><input type="radio" name="b_grasas_electrov" value="SI"> SI</label>
+                                <label class="radio-label"><input type="radio" name="b_grasas_electrov" value="NO"> NO</label>
+                            </td>
+                            <td><input type="number" id="b_grasas_arranques2" placeholder="Nº arranques EV"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- DESARENADOR C -->
+        <div id="desarenadorC" class="tab-content">
+            <div class="card">
+                <div class="section-header">COMPUERTA ENTRADA (413C_VM001)</div>
+                        <div class="equipment-status">
+                            <label>Estado:</label>
+                            <select class="status-select" onchange="toggleEquipment(this)">
+                                <option value="funcionando">Funcionando</option>
+                                <option value="parado">Parado</option>
+                                <option value="defecto">Defecto electrico</option>
+                                <option value="no_funciona">No funciona</option>
+                            </select>
+                        </div>
+                <table>
+                    <thead><tr><th>Punto de Inspección</th><th>Control / Estado</th><th>Dato Adicional</th></tr></thead>
+                    <tbody>
+                        <tr>
+                            <td>1. Estado del equipo en el SCADA</td>
+                            <td>
+                                <div class="scada-group">
+                                    <label class="checkbox-label"><input type="checkbox" name="c_comp_scada" value="R"> R</label>
+                                    <label class="checkbox-label"><input type="checkbox" name="c_comp_scada" value="L"> L</label>
+                                    <label class="checkbox-label"><input type="checkbox" name="c_comp_scada" value="M"> M</label>
+                                    <label class="checkbox-label"><input type="checkbox" name="c_comp_scada" value="A"> A</label>
+                                </div>
+                            </td>
+                            <td><input type="number" id="c_comp_arranques" placeholder="Nº arranques"></td>
+                        </tr>
+                        <tr>
+                            <td>2. Inspección visual del equipo y limpieza correcto</td>
+                            <td>
+                                <label class="radio-label"><input type="radio" name="c_comp_limpieza" value="SI"> SI</label>
+                                <label class="radio-label"><input type="radio" name="c_comp_limpieza" value="NO"> NO</label>
+                            </td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>3. Control de ruidos cuando esté en funcionamiento</td>
+                            <td>
+                                <label class="radio-label"><input type="radio" name="c_comp_ruidos" value="SI"> SI</label>
+                                <label class="radio-label"><input type="radio" name="c_comp_ruidos" value="NO"> NO</label>
+                            </td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="section-header">PUENTE DESARENADOR (413C_QP001)</div>
+                        <div class="equipment-status">
+                            <label>Estado:</label>
+                            <select class="status-select" onchange="toggleEquipment(this)">
+                                <option value="funcionando">Funcionando</option>
+                                <option value="parado">Parado</option>
+                                <option value="defecto">Defecto electrico</option>
+                                <option value="no_funciona">No funciona</option>
+                            </select>
+                        </div>
+                <table>
+                    <thead><tr><th>Punto de Inspección</th><th>Control</th><th>Observaciones / Horas</th></tr></thead>
+                    <tbody>
+                        <tr>
+                            <td>1. Estado del equipo en el SCADA</td>
+                            <td>
+                                <div class="scada-group">
+                                    <label class="checkbox-label"><input type="checkbox" name="c_puente_scada" value="R"> R</label>
+                                    <label class="checkbox-label"><input type="checkbox" name="c_puente_scada" value="L"> L</label>
+                                    <label class="checkbox-label"><input type="checkbox" name="c_puente_scada" value="M"> M</label>
+                                    <label class="checkbox-label"><input type="checkbox" name="c_puente_scada" value="A"> A</label>
+                                </div>
+                            </td>
+                            <td><input type="number" id="c_puente_horas" placeholder="Nº horas"></td>
+                        </tr>
+                        <tr>
+                            <td>2. El equipo se desplaza correctamente</td>
+                            <td>
+                                <label class="radio-label"><input type="radio" name="c_puente_despl" value="SI"> SI</label>
+                                <label class="radio-label"><input type="radio" name="c_puente_despl" value="NO"> NO</label>
+                            </td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>3. Presencia de ruidos, fugas o anomalías</td>
+                            <td>
+                                <label class="radio-label"><input type="radio" name="c_puente_anomalias" value="SI"> SI</label>
+                                <label class="radio-label"><input type="radio" name="c_puente_anomalias" value="NO"> NO</label>
+                            </td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>4. Correcto estado de rasqueta, ruedas, guía</td>
+                            <td>
+                                <label class="radio-label"><input type="radio" name="c_puente_guias" value="SI"> SI</label>
+                                <label class="radio-label"><input type="radio" name="c_puente_guias" value="NO"> NO</label>
+                            </td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>5. Correcto estado de finales de carrera</td>
+                            <td>
+                                <label class="radio-label"><input type="radio" name="c_puente_fcarrera" value="SI"> SI</label>
+                                <label class="radio-label"><input type="radio" name="c_puente_fcarrera" value="NO"> NO</label>
+                            </td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>6. Presencia de rozamientos</td>
+                            <td>
+                                <label class="radio-label"><input type="radio" name="c_puente_rozamientos" value="SI"> SI</label>
+                                <label class="radio-label"><input type="radio" name="c_puente_rozamientos" value="NO"> NO</label>
+                            </td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>7. Las lonas se encuentran limpias y en buen estado</td>
+                            <td>
+                                <label class="radio-label"><input type="radio" name="c_puente_lonas" value="SI"> SI</label>
+                                <label class="radio-label"><input type="radio" name="c_puente_lonas" value="NO"> NO</label>
+                            </td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>8. Sujeciones de las lonas correctas</td>
+                            <td>
+                                <label class="radio-label"><input type="radio" name="c_puente_sujeciones" value="SI"> SI</label>
+                                <label class="radio-label"><input type="radio" name="c_puente_sujeciones" value="NO"> NO</label>
+                            </td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="section-header">BOMBA EXTRACCIÓN ARENAS (413C_PO001)</div>
+                        <div class="equipment-status">
+                            <label>Estado:</label>
+                            <select class="status-select" onchange="toggleEquipment(this)">
+                                <option value="funcionando">Funcionando</option>
+                                <option value="parado">Parado</option>
+                                <option value="defecto">Defecto electrico</option>
+                                <option value="no_funciona">No funciona</option>
+                            </select>
+                        </div>
+                <table>
+                    <thead><tr><th>Punto de Inspección</th><th>Control</th><th>Observaciones</th></tr></thead>
+                    <tbody>
+                        <tr>
+                            <td>1. El equipo funciona correctamente. Extrae agua</td>
+                            <td>
+                                <label class="radio-label"><input type="radio" name="c_bomba_func" value="SI"> SI</label>
+                                <label class="radio-label"><input type="radio" name="c_bomba_func" value="NO"> NO</label>
+                            </td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>2. Presencia de ruidos, fugas o anomalías</td>
+                            <td>
+                                <label class="radio-label"><input type="radio" name="c_bomba_ruidos" value="SI"> SI</label>
+                                <label class="radio-label"><input type="radio" name="c_bomba_ruidos" value="NO"> NO</label>
+                            </td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+<div class="section-header">AIREADORES AEROFLO (413C_AA001A,B,C,D,E)</div>
+                        <div class="equipment-status">
+                            <label>Estado:</label>
+                            <select class="status-select" onchange="toggleEquipment(this)">
+                                <option value="funcionando">Funcionando</option>
+                                <option value="parado">Parado</option>
+                                <option value="defecto">Defecto electrico</option>
+                                <option value="no_funciona">No funciona</option>
+                            </select>
+                        </div>
+                <table>
+                    <thead><tr><th>Punto de Inspección</th><th>Control</th><th>Observaciones</th></tr></thead>
+                    <tbody>
+                        <tr>
+                            <td>1. Estado del equipo en el SCADA</td>
+                            <td>
+                                <div class="scada-group">
+                                    <label class="checkbox-label"><input type="checkbox" name="c_aireadores_scada" value="R"> R</label>
+                                    <label class="checkbox-label"><input type="checkbox" name="c_aireadores_scada" value="L"> L</label>
+                                    <label class="checkbox-label"><input type="checkbox" name="c_aireadores_scada" value="M"> M</label>
+                                    <label class="checkbox-label"><input type="checkbox" name="c_aireadores_scada" value="A"> A</label>
+                                </div>
+                            </td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>2. Presencia de ruidos o anomalías</td>
+                            <td>
+                                <label class="radio-label"><input type="radio" name="c_aireadores_ruidos" value="SI"> SI</label>
+                                <label class="radio-label"><input type="radio" name="c_aireadores_ruidos" value="NO"> NO</label>
+                            </td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="form-group" style="margin-top: 10px;">
+                    <label>3. Horas de funcionamiento Aireadores C:</label>
+                    <div class="grid-5">
+                        <input type="number" id="c_horas_a" placeholder="A (hrs)">
+                        <input type="number" id="c_horas_b" placeholder="B (hrs)">
+                        <input type="number" id="c_horas_c" placeholder="C (hrs)">
+                        <input type="number" id="c_horas_d" placeholder="D (hrs)">
+                        <input type="number" id="c_horas_e" placeholder="E (hrs)">
+                    </div>
+                </div>
+
+                <div class="section-header">COMPUERTA DE GRASAS (413C_VM002)</div>
+                        <div class="equipment-status">
+                            <label>Estado:</label>
+                            <select class="status-select" onchange="toggleEquipment(this)">
+                                <option value="funcionando">Funcionando</option>
+                                <option value="parado">Parado</option>
+                                <option value="defecto">Defecto electrico</option>
+                                <option value="no_funciona">No funciona</option>
+                            </select>
+                        </div>
+                <table>
+                    <thead><tr><th>Punto de Inspección</th><th>Control</th><th>Dato Adicional</th></tr></thead>
+                    <tbody>
+                        <tr>
+                            <td>1. Estado del equipo en el SCADA</td>
+                            <td>
+                                <div class="scada-group">
+                                    <label class="checkbox-label"><input type="checkbox" name="c_grasas_scada" value="R"> R</label>
+                                    <label class="checkbox-label"><input type="checkbox" name="c_grasas_scada" value="L"> L</label>
+                                    <label class="checkbox-label"><input type="checkbox" name="c_grasas_scada" value="M"> M</label>
+                                    <label class="checkbox-label"><input type="checkbox" name="c_grasas_scada" value="A"> A</label>
+                                </div>
+                            </td>
+                            <td><input type="number" id="c_grasas_arranques1" placeholder="Nº arranques"></td>
+                        </tr>
+                        <tr>
+                            <td>2. Inspección visual del equipo y limpieza correcto</td>
+                            <td>
+                                <label class="radio-label"><input type="radio" name="c_grasas_limpieza" value="SI"> SI</label>
+                                <label class="radio-label"><input type="radio" name="c_grasas_limpieza" value="NO"> NO</label>
+                            </td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>3. Control de ruidos cuando esté en funcionamiento</td>
+                            <td>
+                                <label class="radio-label"><input type="radio" name="c_grasas_ruidos" value="SI"> SI</label>
+                                <label class="radio-label"><input type="radio" name="c_grasas_ruidos" value="NO"> NO</label>
+                            </td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>4. Verificar correcto funcionamiento electroválvula limpieza</td>
+                            <td>
+                                <label class="radio-label"><input type="radio" name="c_grasas_electrov" value="SI"> SI</label>
+                                <label class="radio-label"><input type="radio" name="c_grasas_electrov" value="NO"> NO</label>
+                            </td>
+                            <td><input type="number" id="c_grasas_arranques2" placeholder="Nº arranques EV"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- CONTENEDOR Y OBSERVACIONES -->
+        <div id="contenedor" class="tab-content">
+            <div class="card">
+                <div class="section-header">CONTENEDOR DE ARENAS Y GRASAS</div>
+                        <div class="equipment-status">
+                            <label>Estado:</label>
+                            <select class="status-select" onchange="toggleEquipment(this)">
+                                <option value="funcionando">Funcionando</option>
+                                <option value="parado">Parado</option>
+                                <option value="defecto">Defecto electrico</option>
+                                <option value="no_funciona">No funciona</option>
+                            </select>
+                        </div>
+                <table>
+                    <thead><tr><th>Punto de Control</th><th>Estado</th><th>Cantidad Extraída / Detalle</th></tr></thead>
+                    <tbody>
+                        <tr>
+                            <td>1. El tubo de drenaje contiene agua</td>
+                            <td>
+                                <label class="radio-label"><input type="radio" name="cont_tubo_agua" value="SI"> SI</label>
+                                <label class="radio-label"><input type="radio" name="cont_tubo_agua" value="NO"> NO</label>
+                            </td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>2. Retirar agua del contenedor</td>
+                            <td>
+                                <label class="radio-label"><input type="radio" name="cont_retirar_agua" value="SI"> SI</label>
+                                <label class="radio-label"><input type="radio" name="cont_retirar_agua" value="NO"> NO</label>
+                            </td>
+                            <td><input type="text" id="cont_cant_agua" placeholder="Cantidad extraída"></td>
+                        </tr>
+                        <tr>
+                            <td>3. Vaciado de gavetas</td>
+                            <td>
+                                <label class="radio-label"><input type="radio" name="cont_vaciado_gavetas" value="SI"> SI</label>
+                                <label class="radio-label"><input type="radio" name="cont_vaciado_gavetas" value="NO"> NO</label>
+                            </td>
+                            <td><input type="text" id="cont_cant_gavetas" placeholder="Cantidad extraída"></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p style="font-size: 0.85rem; color: var(--warning); font-weight: 600; margin-bottom: 12px;">
+                    📌 Nota: Al finalizar el turno las gavetas deben quedar vacías.
+                </p>
+
+                <div class="form-group">
+                    <label>Observaciones Generales del Turno</label>
+                    <textarea id="observaciones_generales" rows="4" placeholder="Escriba aquí incidecias, anomalías detectadas, mantenimientos realizados..."></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- RESUMEN / HISTORIAL DE REGISTROS -->
+        <div id="resumenTab" class="tab-content">
+            <div class="card" id="loginGate" style="display:none;">
+                <div class="card-title">Acceso Restringido - Administrador</div>
+                <p style="font-size: 0.9rem; margin-bottom: 15px;">Introduzca credenciales de administrador para acceder a los registros.</p>
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label>Usuario</label>
+                        <input type="text" id="adminUser" placeholder="Usuario">
+                    </div>
+                    <div class="form-group">
+                        <label>Contraseña</label>
+                        <input type="password" id="adminPass" placeholder="Contraseña">
+                    </div>
+                </div>
+                <div style="margin-top: 12px;">
+                    <button type="button" class="btn btn-primary" onclick="adminLogin()">Entrar</button>
+                    <span id="loginError" style="color: var(--danger); font-size: 0.85rem; margin-left: 10px; display: none;">Credenciales incorrectas.</span>
+                </div>
+            </div>
+            <div class="card" id="recordsPanel" style="display:none;">
+                <div class="card-title">Registros Almacenados en el Navegador
+                    <button type="button" class="btn btn-secondary" style="padding:4px 10px; font-size:0.8rem;" onclick="adminLogout()">Cerrar sesion</button>
+                </div>
+                <p style="font-size: 0.9rem; margin-bottom: 15px;">A continuacion se muestra el listado de inspecciones guardadas en LocalStorage.</p>
+                <div id="savedRecordsTable"></div>
+            </div>
+        </div>
+
+        <!-- MODAL REVISION GUARDADO -->
+        <div id="reviewModal" class="modal">
+            <div class="modal-content">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+                    <h3 style="color: var(--primary);">Revision antes de guardar</h3>
+                    <button type="button" class="btn btn-secondary" style="padding:4px 10px;" onclick="closeReviewModal()">Cerrar</button>
+                </div>
+                <div id="reviewContent"></div>
+                <div id="reviewWarnings" style="margin-top:12px;"></div>
+                <div style="margin-top:16px; text-align:right; display:flex; gap:10px; justify-content:flex-end;">
+                    <button type="button" class="btn btn-secondary" onclick="closeReviewModal()">Cancelar</button>
+                    <button type="button" class="btn btn-success" onclick="confirmSave()">Confirmar Guardado</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- BARRA DE ACCIONES -->
+        <div class="actions-bar">
+            <button type="button" class="btn btn-secondary" onclick="resetForm()">🧹 Limpiar</button>
+            <button type="button" class="btn btn-primary" onclick="saveToLocalStorage()">💾 Guardar Local</button>
+            <button type="button" class="btn btn-success" onclick="exportJSON()">📥 Exportar JSON</button>
+            <button type="button" class="btn btn-warning" onclick="exportExcel()">📊 Exportar Excel</button>
+        </div>
+    </form>
+</div>
+
+<script src="js/vendor/xlsx.full.min.js"></script>
+<script src="js/app.js?v=3"></script>
+
+</body>
+</html>
