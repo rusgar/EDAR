@@ -979,16 +979,25 @@
 
         <!-- BARRA DE ACCIONES -->
         <div class="actions-bar">
-            <button type="button" class="btn btn-secondary" onclick="resetForm()">🧹 Limpiar</button>
-            <button type="button" class="btn btn-primary" onclick="saveToLocalStorage()">💾 Guardar Local</button>
-            <button type="button" class="btn btn-success" onclick="exportJSON()">📥 Exportar JSON</button>
-            <button type="button" class="btn btn-warning" onclick="exportExcel()">📊 Exportar Excel</button>
+            <div style="flex:1; display:flex; align-items:center; gap:12px;">
+                <span id="backupStatus" style="font-size:0.75rem; color: var(--text-muted);"></span>
+                <span id="emptyDataMsg" style="display:none; font-size:0.8rem; color: var(--danger); font-weight:600;">
+                    No hay datos guardados.
+                    <label for="backupFileInput" style="text-decoration:underline; cursor:pointer; color:var(--primary);">Importar backup</label>
+                    <input type="file" id="backupFileInput" accept=".json" style="display:none;" onchange="importBackupFile()">
+                </span>
+            </div>
+            <button type="button" class="btn btn-secondary" onclick="resetForm()">Limpiar</button>
+            <button type="button" class="btn btn-primary" onclick="saveToLocalStorage()">Guardar Local</button>
+            <button type="button" class="btn btn-success" onclick="exportJSON()">Exportar JSON</button>
+            <button type="button" class="btn btn-warning" onclick="exportExcel()">Exportar Excel</button>
         </div>
     </form>
 </div>
 
 <script src="js/vendor/xlsx.full.min.js"></script>
-<script src="js/app.js?v=3"></script>
+<script src="js/db.js?v=2"></script>
+<script src="js/app.js?v=6"></script>
 
 </body>
 </html>

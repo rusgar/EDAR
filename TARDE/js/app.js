@@ -1,11 +1,39 @@
-document.getElementById('fecha').value = new Date().toISOString().split('T')[0];
-
+window._dataCache = [];
 var loadingRecord = false;
 var adminAutenticado = false;
 var pendingSaveData = null;
 
 var ADMIN_USER = 'admin';
 var ADMIN_PASS = 'edar2026';
+
+function getDataList() { return window._dataCache; }
+
+function loadDataFromDB(callback) {
+    DB.getAll(function(list) {
+        if (list && list.length > 0) {
+            window._dataCache = list;
+            if (callback) callback();
+            return;
+        }
+        var local = DB.getLocalBackup();
+        if (local && local.length > 0) {
+            window._dataCache = local;
+            DB.saveAll(local, function() {
+                if (callback) callback();
+            });
+        } else {
+            window._dataCache = [];
+            if (callback) callback();
+        }
+    });
+}
+
+function persistData(callback) {
+    DB.saveAll(window._dataCache, function(ok) {
+        DB.updateBackupStatus();
+        if (callback) callback(ok);
+    });
+}
 
 function filterOperario2() {
     var op1 = document.getElementById('operario1').value;
@@ -436,7 +464,7 @@ function buildExcelRows(list) {
 }
 
 function exportExcel() {
-    const list = JSON.parse(localStorage.getItem('desarenadores_data') || '[]');
+    var list = getDataList();
     if (list.length === 0) {
         alert('No hay registros guardados para exportar.');
         return;
@@ -451,7 +479,7 @@ function exportExcel() {
 }
 
 function loadSavedRecords() {
-    const list = JSON.parse(localStorage.getItem('desarenadores_data') || '[]');
+    var list = getDataList();
     const container = document.getElementById('savedRecordsTable');
     if (list.length === 0) {
         container.innerHTML = '<p style="color: var(--text-muted);">No hay registros guardados aun.</p>';
@@ -475,7 +503,7 @@ function loadSavedRecords() {
 }
 
 function downloadSingleJSON(index) {
-    const list = JSON.parse(localStorage.getItem('desarenadores_data') || '[]');
+    var list = getDataList();
     const data = list[index];
     const jsonStr = JSON.stringify(data, null, 2);
     const blob = new Blob([jsonStr], { type: 'application/json' });
@@ -489,10 +517,10 @@ function downloadSingleJSON(index) {
 function loadRecord(index) {
     loadingRecord = true;
     try {
-        var list = JSON.parse(localStorage.getItem('desarenadores_data') || '[]');
+        var list = getDataList();
         var r = list[index];
         if (!r) { alert('Registro no encontrado.'); return; }
-        if (!confirm('Cargar registro del ' + r.fecha + ' (' + (r.turno || '') + ')? Se perderán los datos actuales del formulario.')) { loadingRecord = false; return; }
+        if (!confirm('Cargar registro del ' + r.fecha + ' (' + (r.turno || '') + ')? Se perderan los datos actuales del formulario.')) { loadingRecord = false; return; }
 
         document.getElementById('fecha').value = r.fecha || '';
         document.getElementById('turno').value = r.turno || '';
@@ -635,15 +663,9 @@ function loadRecord(index) {
 }
 
 function loadPreviousHours() {
-    const list = JSON.parse(localStorage.getItem('desarenadores_data') || '[]');
+    var list = getDataList();
     if (list.length === 0) return;
     const prev = list[list.length - 1];
-    const hourFields = [
-        'a_puente_horas', 'b_puente_horas', 'c_puente_horas',
-        'a_horas_a', 'a_horas_b', 'a_horas_c', 'a_horas_d', 'a_horas_e',
-        'b_horas_a', 'b_horas_b', 'b_horas_c', 'b_horas_d', 'b_horas_e',
-        'c_horas_a', 'c_horas_b', 'c_horas_c', 'c_horas_d', 'c_horas_e'
-    ];
     const map = {};
     if (prev.desarenador_A) {
         map['a_puente_horas'] = prev.desarenador_A.puente && prev.desarenador_A.puente.horas;
@@ -676,7 +698,7 @@ function loadPreviousHours() {
 }
 
 function showReviewModal(data) {
-    var list = JSON.parse(localStorage.getItem('desarenadores_data') || '[]');
+    var list = getDataList();
     var warnings = validateHours(data, list);
 
     var html = '';
@@ -742,12 +764,13 @@ function closeReviewModal() {
 
 function confirmSave() {
     if (!pendingSaveData) return;
-    var list = JSON.parse(localStorage.getItem('desarenadores_data') || '[]');
-    list.push(pendingSaveData);
-    localStorage.setItem('desarenadores_data', JSON.stringify(list));
-    closeReviewModal();
-    alert('Datos guardados con exito.');
-    pendingSaveData = null;
+    window._dataCache.push(pendingSaveData);
+    persistData(function() {
+        DB.exportToFile();
+        closeReviewModal();
+        alert('Datos guardados. Backup descargado a Descargas.');
+        pendingSaveData = null;
+    });
 }
 
 function validateHours(data, list) {
@@ -819,30 +842,41 @@ function adminLogout() {
 }
 
 function autoLoadPreviousDay() {
-    var list = JSON.parse(localStorage.getItem('desarenadores_data') || '[]');
+    var list = getDataList();
     if (list.length === 0) return;
-    var now = new Date();
-    var hour = now.getHours();
-    if (hour >= 6 && hour < 14) {
-        var prev = list[list.length - 1];
-        if (prev && prev.fecha) {
-            document.getElementById('turno').value = prev.turno || '';
-            document.getElementById('operario1').value = prev.operario1 || '';
-            filterOperario2();
-            document.getElementById('operario2').value = prev.operario2 || '';
-            var letters = ['A', 'B', 'C'];
-            letters.forEach(function(L) {
-                var l = L.toLowerCase();
-                var d = prev['desarenador_' + L] || {};
-                var pte = d.puente || {};
-                if (pte.horas) { var el = document.getElementById(l + '_puente_horas'); if (el) el.value = pte.horas; }
-                var ah = (d.aireadores || {}).horas || {};
-                ['a', 'b', 'c', 'd', 'e'].forEach(function(k) {
-                    if (ah[k]) { var e = document.getElementById(l + '_horas_' + k); if (e) e.value = ah[k]; }
-                });
+    var prev = list[list.length - 1];
+    if (!prev || !prev.fecha) return;
+    var letters = ['A', 'B', 'C'];
+    letters.forEach(function(L) {
+        var l = L.toLowerCase();
+        var d = prev['desarenador_' + L] || {};
+        var pte = d.puente || {};
+        if (pte.horas) { var el = document.getElementById(l + '_puente_horas'); if (el) el.value = pte.horas; }
+        var ah = (d.aireadores || {}).horas || {};
+        ['a', 'b', 'c', 'd', 'e'].forEach(function(k) {
+            if (ah[k]) { var e = document.getElementById(l + '_horas_' + k); if (e) e.value = ah[k]; }
+        });
+    });
+}
+
+function importBackupFile() {
+    var input = document.getElementById('backupFileInput');
+    if (input.files.length === 0) {
+        alert('Seleccione un archivo de backup (.json)');
+        return;
+    }
+    DB.importFromFile(input.files[0], function(ok) {
+        if (ok) {
+            loadDataFromDB(function() {
+                DB.updateBackupStatus();
+                var emptyMsg = document.getElementById('emptyDataMsg');
+                if (emptyMsg) emptyMsg.style.display = 'none';
+                if (adminAutenticado) loadSavedRecords();
+                autoLoadPreviousDay();
             });
         }
-    }
+        input.value = '';
+    });
 }
 
 function resetForm() {
@@ -859,9 +893,12 @@ function resetForm() {
 
 document.getElementById('fecha').addEventListener('change', function () {
     if (loadingRecord) return;
-    const prevFecha = this.dataset.prevFecha;
-    if (prevFecha && prevFecha !== this.value) {
-        if (confirm('Cambio de fecha detectado. Desea cargar las horas del registro anterior?')) {
+    var list = getDataList();
+    if (list.length === 0) return;
+    var prev = list[list.length - 1];
+    if (!prev || !prev.fecha) return;
+    if (this.value > prev.fecha) {
+        if (confirm('Dia anterior tiene registro (' + prev.fecha + '). Cargar horas?')) {
             loadPreviousHours();
         }
     }
@@ -869,6 +906,7 @@ document.getElementById('fecha').addEventListener('change', function () {
 });
 
 document.addEventListener('DOMContentLoaded', function () {
+    document.getElementById('fecha').value = new Date().toISOString().split('T')[0];
     document.getElementById('fecha').dataset.prevFecha = document.getElementById('fecha').value;
     document.querySelectorAll('.scada-group input[type="checkbox"]').forEach(cb => {
         cb.addEventListener('change', function () {
@@ -882,5 +920,15 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
     });
-    autoLoadPreviousDay();
+    loadDataFromDB(function() {
+        DB.updateBackupStatus();
+        var count = window._dataCache.length;
+        var emptyMsg = document.getElementById('emptyDataMsg');
+        if (emptyMsg) {
+            emptyMsg.style.display = count === 0 ? '' : 'none';
+        }
+        if (count > 0) {
+            autoLoadPreviousDay();
+        }
+    });
 });

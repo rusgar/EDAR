@@ -57,7 +57,8 @@ TARDE/
 ├── css/
 │   └── styles.css          # Estilos completos de la aplicacion
 ├── js/
-│   ├── app.js              # Logica de la aplicacion (~890 lineas)
+│   ├── db.js               # Capa de persistencia (IndexedDB + backup)
+│   ├── app.js              # Logica de la aplicacion (~940 lineas)
 │   └── vendor/
 │       └── xlsx.full.min.js  # SheetJS para exportacion Excel (offline)
 ├── img/
@@ -76,9 +77,10 @@ TARDE/
 | CSS3 | Estilos con variables CSS, Grid, Flexbox |
 | JavaScript vanilla | Toda la logica (sin frameworks) |
 | SheetJS (xlsx) | Exportacion a Excel offline |
-| localStorage | Almacenamiento local de registros |
+| IndexedDB | Almacenamiento persistente de registros |
+| File System Access API | Backup automatico a archivo JSON en disco |
 
-No requiere servidor, base de datos ni conexion a internet.
+No requiere servidor ni base de datos externa.
 
 ---
 
@@ -125,7 +127,15 @@ Definidas en `js/app.js` lineas 7-8.
 - [x] Deteccion de anomalias en horas y arranques (>50% variacion)
 - [x] Auto-carga de horas del dia anterior al iniciar en turno de mananas
 
-### Fase 6 - Pendiente
+### Fase 6 - Persistencia de datos
+- [x] Migracion de localStorage a IndexedDB (mas robusto)
+- [x] Auto-backup a archivo JSON tras cada guardado
+- [x] Migracion automatica de datos antiguos de localStorage a IndexedDB
+- [x] Indicador de ultimo backup visible en la barra de acciones
+- [x] Mensaje de "No hay datos" con boton para importar backup
+- [x] Funcion de importar backup desde archivo JSON
+
+### Fase 7 - Pendiente
 - [ ] Adaptar plantilla para turno de Mananas
 - [ ] Comparar plantillas Mananas vs Tardes y unificar diferencias
 - [ ] Posible modo edicion de registros existentes
@@ -149,4 +159,7 @@ Definidas en `js/app.js` lineas 7-8.
 - El SCADA requiere exactamente 2 selecciones de las 4 opciones (R, L, M, A)
 - Las horas del puentede A y B incluyen campo "rasquetas"; el desarenador C no lo tiene
 - SheetJS esta descargado localmente en `js/vendor/` para funcionar sin internet
-- Los datos se almacenan en `localStorage` con clave `desarenadores_data`
+- Los datos se almacenan en IndexedDB con nombre `EDAR_Checklist`
+- Se migra automaticamente datos antiguos de localStorage si existen
+- Cada guardado descarga automaticamente un backup `.json` en la carpeta de Descargas
+- Si no hay datos al iniciar, se muestra un boton para importar un backup anterior
