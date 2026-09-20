@@ -1,0 +1,341 @@
+[
+  {
+    "id": "CHECK_SEED_001",
+    "fecha": "2026-09-18",
+    "turno": "Tardes",
+    "operario1": "Luis",
+    "operario2": "Ana",
+    "desarenador_A": {
+      "compuerta_entrada": {
+        "estado": "funcionando",
+        "scada": "R, L",
+        "limpieza": "SI",
+        "ruidos": "NO",
+        "arranques": "4"
+      },
+      "puente": {
+        "estado": "funcionando",
+        "scada": "M, A",
+        "horas": "6.5",
+        "desplazamiento": "SI",
+        "rasquetas": "SI",
+        "anomalias": "NO",
+        "guias_ruedas": "SI",
+        "finales_carrera": "SI",
+        "rozamientos": "NO",
+        "lonas_limpias": "SI",
+        "lonas_sujeciones": "SI"
+      },
+      "bomba_arenas": {
+        "estado": "funcionando",
+        "funcionamiento": "SI",
+        "ruidos_fugas": "NO"
+      },
+      "aireadores": {
+        "estado": "funcionando",
+        "scada": "R, M",
+        "ruidos": "NO",
+        "horas": {
+          "a": "8",
+          "b": "7",
+          "c": "8",
+          "d": "6",
+          "e": "7"
+        }
+      },
+      "compuerta_grasas": {
+        "estado": "funcionando",
+        "scada": "L, A",
+        "arranques": "3",
+        "limpieza": "SI",
+        "ruidos": "NO",
+        "electrovalvula": "SI",
+        "electrovalvula_arranques": "2"
+      }
+    },
+    "desarenador_B": {
+      "compuerta_entrada": {
+        "estado": "funcionando",
+        "scada": "R, M",
+        "limpieza": "SI",
+        "ruidos": "NO",
+        "arranques": "5"
+      },
+      "puente": {
+        "estado": "funcionando",
+        "scada": "R, L",
+        "horas": "7.0",
+        "desplazamiento": "SI",
+        "rasquetas": "SI",
+        "anomalias": "NO",
+        "guias_ruedas": "SI",
+        "finales_carrera": "SI",
+        "rozamientos": "NO",
+        "lonas_limpias": "SI",
+        "lonas_sujeciones": "SI"
+      },
+      "bomba_arenas": {
+        "estado": "funcionando",
+        "funcionamiento": "SI",
+        "ruidos_fugas": "NO"
+      },
+      "aireadores": {
+        "estado": "funcionando",
+        "scada": "L, A",
+        "ruidos": "NO",
+        "horas": {
+          "a": "8",
+          "b": "8",
+          "c": "7",
+          "d": "7",
+          "e": "8"
+        }
+      },
+      "compuerta_grasas": {
+        "estado": "funcionando",
+        "scada": "R, A",
+        "arranques": "4",
+        "limpieza": "SI",
+        "ruidos": "NO",
+        "electrovalvula": "SI",
+        "electrovalvula_arranques": "3"
+      }
+    },
+    "desarenador_C": {
+      "compuerta_entrada": {
+        "estado": "funcionando",
+        "scada": "L, A",
+        "limpieza": "SI",
+        "ruidos": "NO",
+        "arranques": "3"
+      },
+      "puente": {
+        "estado": "funcionando",
+        "scada": "R, M",
+        "horas": "5.5",
+        "desplazamiento": "SI",
+        "anomalias": "NO",
+        "guias_ruedas": "SI",
+        "finales_carrera": "SI",
+        "rozamientos": "NO",
+        "lonas_limpias": "SI",
+        "lonas_sujeciones": "SI"
+      },
+      "bomba_arenas": {
+        "estado": "funcionando",
+        "funcionamiento": "SI",
+        "ruidos_fugas": "NO"
+      },
+      "aireadores": {
+        "estado": "funcionando",
+        "scada": "R, L",
+        "ruidos": "NO",
+        "horas": {
+          "a": "7",
+          "b": "7",
+          "c": "8",
+          "d": "8",
+          "e": "7"
+        }
+      },
+      "compuerta_grasas": {
+        "estado": "funcionando",
+        "scada": "M, A",
+        "arranques": "2",
+        "limpieza": "SI",
+        "ruidos": "NO",
+        "electrovalvula": "SI",
+        "electrovalvula_arranques": "1"
+      }
+    },
+    "contenedor_arenas_grasas": {
+      "estado": "funcionando",
+      "tubo_agua": "SI",
+      "retirar_agua": "SI",
+      "cant_agua": "2 m3",
+      "vaciado_gavetas": "SI",
+      "cant_gavetas": "4 gavetas"
+    },
+    "observaciones_generales": "Sin incidencias destacables. Turno normal.",
+    "observaciones_campo": {
+      "a_comp_limpieza": "Limpieza correcta",
+      "a_puente_despl": "Desplazamiento normal",
+      "a_bomba_func": "Extraccion correcta",
+      "b_comp_limpieza": "Limpieza correcta",
+      "b_puente_despl": "Desplazamiento normal",
+      "c_comp_limpieza": "Limpieza correcta",
+      "cont_tubo_agua": "Tubo con agua residual"
+    },
+    "timestamp": "2026-09-18T18:30:00.000Z"
+  },
+  {
+    "id": "CHECK_SEED_002",
+    "fecha": "2026-09-19",
+    "turno": "Mananas",
+    "operario1": "Carlos",
+    "operario2": "Sara",
+    "desarenador_A": {
+      "compuerta_entrada": {
+        "estado": "funcionando",
+        "scada": "R, L",
+        "limpieza": "SI",
+        "ruidos": "NO",
+        "arranques": "5"
+      },
+      "puente": {
+        "estado": "funcionando",
+        "scada": "M, A",
+        "horas": "7.0",
+        "desplazamiento": "SI",
+        "rasquetas": "SI",
+        "anomalias": "NO",
+        "guias_ruedas": "SI",
+        "finales_carrera": "SI",
+        "rozamientos": "NO",
+        "lonas_limpias": "SI",
+        "lonas_sujeciones": "SI"
+      },
+      "bomba_arenas": {
+        "estado": "funcionando",
+        "funcionamiento": "SI",
+        "ruidos_fugas": "NO"
+      },
+      "aireadores": {
+        "estado": "funcionando",
+        "scada": "R, M",
+        "ruidos": "NO",
+        "horas": {
+          "a": "8",
+          "b": "8",
+          "c": "8",
+          "d": "7",
+          "e": "8"
+        }
+      },
+      "compuerta_grasas": {
+        "estado": "funcionando",
+        "scada": "L, A",
+        "arranques": "4",
+        "limpieza": "SI",
+        "ruidos": "NO",
+        "electrovalvula": "SI",
+        "electrovalvula_arranques": "3"
+      }
+    },
+    "desarenador_B": {
+      "compuerta_entrada": {
+        "estado": "funcionando",
+        "scada": "R, M",
+        "limpieza": "SI",
+        "ruidos": "NO",
+        "arranques": "6"
+      },
+      "puente": {
+        "estado": "funcionando",
+        "scada": "R, L",
+        "horas": "7.5",
+        "desplazamiento": "SI",
+        "rasquetas": "SI",
+        "anomalias": "NO",
+        "guias_ruedas": "SI",
+        "finales_carrera": "SI",
+        "rozamientos": "NO",
+        "lonas_limpias": "SI",
+        "lonas_sujeciones": "SI"
+      },
+      "bomba_arenas": {
+        "estado": "funcionando",
+        "funcionamiento": "SI",
+        "ruidos_fugas": "NO"
+      },
+      "aireadores": {
+        "estado": "funcionando",
+        "scada": "L, A",
+        "ruidos": "NO",
+        "horas": {
+          "a": "8",
+          "b": "8",
+          "c": "8",
+          "d": "8",
+          "e": "8"
+        }
+      },
+      "compuerta_grasas": {
+        "estado": "funcionando",
+        "scada": "R, A",
+        "arranques": "5",
+        "limpieza": "SI",
+        "ruidos": "NO",
+        "electrovalvula": "SI",
+        "electrovalvula_arranques": "4"
+      }
+    },
+    "desarenador_C": {
+      "compuerta_entrada": {
+        "estado": "funcionando",
+        "scada": "L, A",
+        "limpieza": "SI",
+        "ruidos": "NO",
+        "arranques": "4"
+      },
+      "puente": {
+        "estado": "funcionando",
+        "scada": "R, M",
+        "horas": "6.0",
+        "desplazamiento": "SI",
+        "anomalias": "NO",
+        "guias_ruedas": "SI",
+        "finales_carrera": "SI",
+        "rozamientos": "NO",
+        "lonas_limpias": "SI",
+        "lonas_sujeciones": "SI"
+      },
+      "bomba_arenas": {
+        "estado": "funcionando",
+        "funcionamiento": "SI",
+        "ruidos_fugas": "NO"
+      },
+      "aireadores": {
+        "estado": "funcionando",
+        "scada": "R, L",
+        "ruidos": "NO",
+        "horas": {
+          "a": "8",
+          "b": "8",
+          "c": "8",
+          "d": "8",
+          "e": "8"
+        }
+      },
+      "compuerta_grasas": {
+        "estado": "funcionando",
+        "scada": "M, A",
+        "arranques": "3",
+        "limpieza": "SI",
+        "ruidos": "NO",
+        "electrovalvula": "SI",
+        "electrovalvula_arranques": "2"
+      }
+    },
+    "contenedor_arenas_grasas": {
+      "estado": "funcionando",
+      "tubo_agua": "SI",
+      "retirar_agua": "SI",
+      "cant_agua": "3 m3",
+      "vaciado_gavetas": "SI",
+      "cant_gavetas": "5 gavetas"
+    },
+    "observaciones_generales": "Se repuso grasa en ruedas del puente B.",
+    "observaciones_campo": {
+      "a_comp_limpieza": "Limpieza correcta",
+      "a_puente_despl": "Desplazamiento normal",
+      "a_bomba_func": "Extraccion correcta",
+      "b_comp_limpieza": "Limpieza correcta",
+      "b_puente_despl": "Ruido leve al desplazar, revisar",
+      "b_puente_rasquetas": "Rasquetas funcionando correctamente",
+      "c_comp_limpieza": "Limpieza correcta",
+      "cont_tubo_agua": "Tubo con agua residual"
+    },
+    "timestamp": "2026-09-19T08:30:00.000Z"
+  }
+]
