@@ -1,98 +1,56 @@
 var DB = (function() {
-    var DB_NAME = 'EDAR_Checklist';
-    var STORE_NAME = 'registros';
-    var DB_VERSION = 1;
-    var db = null;
-    var ready = false;
+    var STORAGE_KEY = 'edar_checklist_data';
+    var BACKUP_KEY = 'edar_last_backup';
 
-    function open(callback) {
-        if (db && ready) { callback(db); return; }
+    function getAll() {
         try {
-            var req = indexedDB.open(DB_NAME, DB_VERSION);
-            req.onupgradeneeded = function(e) {
-                var database = e.target.result;
-                if (!database.objectStoreNames.contains(STORE_NAME)) {
-                    database.createObjectStore(STORE_NAME, { keyPath: 'id' });
-                }
-            };
-            req.onsuccess = function(e) {
-                db = e.target.result;
-                ready = true;
-                callback(db);
-            };
-            req.onerror = function(e) {
-                console.error('Error abriendo IndexedDB:', e);
-                callback(null);
-            };
-        } catch(err) {
-            console.error('Error IndexedDB:', err);
-            callback(null);
+            var raw = localStorage.getItem(STORAGE_KEY);
+            if (!raw) return [];
+            var list = JSON.parse(raw);
+            return Array.isArray(list) ? list : [];
+        } catch(e) {
+            console.error('Error leyendo localStorage:', e);
+            return [];
         }
     }
 
-    function getAll(callback) {
-        open(function(database) {
-            if (!database) { callback([]); return; }
-            try {
-                var tx = database.transaction(STORE_NAME, 'readonly');
-                var store = tx.objectStore(STORE_NAME);
-                var req = store.getAll();
-                req.onsuccess = function() { callback(req.result || []); };
-                req.onerror = function() { callback([]); };
-            } catch(e) { callback([]); }
-        });
+    function saveAll(list) {
+        try {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+            localStorage.setItem(BACKUP_KEY, new Date().toISOString());
+            return true;
+        } catch(e) {
+            console.error('Error guardando en localStorage:', e);
+            alert('Error al guardar. El almacenamiento del navegador puede estar lleno.');
+            return false;
+        }
     }
 
-    function saveAll(list, callback) {
-        open(function(database) {
-            if (!database) { if (callback) callback(false); return; }
-            try {
-                var tx = database.transaction(STORE_NAME, 'readwrite');
-                var store = tx.objectStore(STORE_NAME);
-                store.clear();
-                list.forEach(function(item) {
-                    store.put(item);
-                });
-                tx.oncomplete = function() {
-                    localStorage.setItem('edar_last_backup', new Date().toISOString());
-                    if (callback) callback(true);
-                };
-                tx.onerror = function(e) {
-                    console.error('Error guardando en IndexedDB:', e);
-                    if (callback) callback(false);
-                };
-            } catch(e) {
-                console.error('Error en saveAll:', e);
-                if (callback) callback(false);
-            }
-        });
-    }
-
-    function addRecord(record, callback) {
-        getAll(function(list) {
-            list.push(record);
-            saveAll(list, callback);
-        });
+    function addRecord(record) {
+        var list = getAll();
+        list.push(record);
+        return saveAll(list);
     }
 
     function exportToFile() {
-        getAll(function(list) {
-            if (list.length === 0) return;
-            try {
-                var jsonStr = JSON.stringify(list, null, 2);
-                var blob = new Blob([jsonStr], { type: 'application/json' });
-                var url = URL.createObjectURL(blob);
-                var a = document.createElement('a');
-                a.href = url;
-                var fecha = new Date().toISOString().split('T')[0];
-                a.download = 'edar_backup_' + fecha + '.json';
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-                localStorage.setItem('edar_last_backup', new Date().toISOString());
-            } catch(e) { console.error('Error exportando:', e); }
-        });
+        var list = getAll();
+        if (list.length === 0) return;
+        try {
+            var jsonStr = JSON.stringify(list, null, 2);
+            var blob = new Blob([jsonStr], { type: 'application/json' });
+            var url = URL.createObjectURL(blob);
+            var a = document.createElement('a');
+            a.href = url;
+            var fecha = new Date().toISOString().split('T')[0];
+            a.download = 'edar_backup_' + fecha + '.json';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            localStorage.setItem(BACKUP_KEY, new Date().toISOString());
+        } catch(e) {
+            console.error('Error exportando:', e);
+        }
     }
 
     function importFromFile(file, callback) {
@@ -105,14 +63,13 @@ var DB = (function() {
                     if (callback) callback(false);
                     return;
                 }
-                saveAll(list, function(ok) {
-                    if (ok) {
-                        alert('Se importaron ' + list.length + ' registros correctamente.');
-                    } else {
-                        alert('Error al importar los datos.');
-                    }
-                    if (callback) callback(ok);
-                });
+                var ok = saveAll(list);
+                if (ok) {
+                    alert('Se importaron ' + list.length + ' registros correctamente.');
+                } else {
+                    alert('Error al importar los datos.');
+                }
+                if (callback) callback(ok);
             } catch(err) {
                 alert('Error al leer el archivo: ' + err.message);
                 if (callback) callback(false);
@@ -124,7 +81,7 @@ var DB = (function() {
     function updateBackupStatus() {
         var el = document.getElementById('backupStatus');
         if (!el) return;
-        var last = localStorage.getItem('edar_last_backup');
+        var last = localStorage.getItem(BACKUP_KEY);
         if (last) {
             var d = new Date(last);
             el.textContent = 'Ultimo guardado: ' + d.toLocaleDateString('es-ES') + ' ' + d.toLocaleTimeString('es-ES');
@@ -136,20 +93,25 @@ var DB = (function() {
     }
 
     function getLocalBackup() {
-        try {
-            var old = localStorage.getItem('desarenadores_data');
-            if (!old) return null;
-            var list = JSON.parse(old);
-            if (!Array.isArray(list) || list.length === 0) return null;
-            return list;
-        } catch(e) { return null; }
+        return getAll();
     }
 
     return {
-        open: open,
-        getAll: getAll,
-        saveAll: saveAll,
-        addRecord: addRecord,
+        getAll: function(callback) {
+            var result = getAll();
+            if (callback) callback(result);
+            return result;
+        },
+        saveAll: function(list, callback) {
+            var ok = saveAll(list);
+            if (callback) callback(ok);
+            return ok;
+        },
+        addRecord: function(record, callback) {
+            var ok = addRecord(record);
+            if (callback) callback(ok);
+            return ok;
+        },
         exportToFile: exportToFile,
         importFromFile: importFromFile,
         updateBackupStatus: updateBackupStatus,
