@@ -662,41 +662,6 @@ function loadRecord(index) {
     loadingRecord = false;
 }
 
-function loadPreviousHours() {
-    var list = getDataList();
-    if (list.length === 0) return;
-    const prev = list[list.length - 1];
-    const map = {};
-    if (prev.desarenador_A) {
-        map['a_puente_horas'] = prev.desarenador_A.puente && prev.desarenador_A.puente.horas;
-        map['a_horas_a'] = prev.desarenador_A.aireadores && prev.desarenador_A.aireadores.horas && prev.desarenador_A.aireadores.horas.a;
-        map['a_horas_b'] = prev.desarenador_A.aireadores && prev.desarenador_A.aireadores.horas && prev.desarenador_A.aireadores.horas.b;
-        map['a_horas_c'] = prev.desarenador_A.aireadores && prev.desarenador_A.aireadores.horas && prev.desarenador_A.aireadores.horas.c;
-        map['a_horas_d'] = prev.desarenador_A.aireadores && prev.desarenador_A.aireadores.horas && prev.desarenador_A.aireadores.horas.d;
-        map['a_horas_e'] = prev.desarenador_A.aireadores && prev.desarenador_A.aireadores.horas && prev.desarenador_A.aireadores.horas.e;
-    }
-    if (prev.desarenador_B) {
-        map['b_puente_horas'] = prev.desarenador_B.puente && prev.desarenador_B.puente.horas;
-        map['b_horas_a'] = prev.desarenador_B.aireadores && prev.desarenador_B.aireadores.horas && prev.desarenador_B.aireadores.horas.a;
-        map['b_horas_b'] = prev.desarenador_B.aireadores && prev.desarenador_B.aireadores.horas && prev.desarenador_B.aireadores.horas.b;
-        map['b_horas_c'] = prev.desarenador_B.aireadores && prev.desarenador_B.aireadores.horas && prev.desarenador_B.aireadores.horas.c;
-        map['b_horas_d'] = prev.desarenador_B.aireadores && prev.desarenador_B.aireadores.horas && prev.desarenador_B.aireadores.horas.d;
-        map['b_horas_e'] = prev.desarenador_B.aireadores && prev.desarenador_B.aireadores.horas && prev.desarenador_B.aireadores.horas.e;
-    }
-    if (prev.desarenador_C) {
-        map['c_puente_horas'] = prev.desarenador_C.puente && prev.desarenador_C.puente.horas;
-        map['c_horas_a'] = prev.desarenador_C.aireadores && prev.desarenador_C.aireadores.horas && prev.desarenador_C.aireadores.horas.a;
-        map['c_horas_b'] = prev.desarenador_C.aireadores && prev.desarenador_C.aireadores.horas && prev.desarenador_C.aireadores.horas.b;
-        map['c_horas_c'] = prev.desarenador_C.aireadores && prev.desarenador_C.aireadores.horas && prev.desarenador_C.aireadores.horas.c;
-        map['c_horas_d'] = prev.desarenador_C.aireadores && prev.desarenador_C.aireadores.horas && prev.desarenador_C.aireadores.horas.d;
-        map['c_horas_e'] = prev.desarenador_C.aireadores && prev.desarenador_C.aireadores.horas && prev.desarenador_C.aireadores.horas.e;
-    }
-    for (const [id, val] of Object.entries(map)) {
-        const el = document.getElementById(id);
-        if (el && val != null && val !== '') el.value = val;
-    }
-}
-
 function showReviewModal(data) {
     var list = getDataList();
     var warnings = validateHours(data, list);
@@ -846,17 +811,143 @@ function autoLoadPreviousDay() {
     if (list.length === 0) return;
     var prev = list[list.length - 1];
     if (!prev || !prev.fecha) return;
-    var letters = ['A', 'B', 'C'];
-    letters.forEach(function(L) {
+
+    loadingRecord = true;
+
+    function setRadio(name, value) {
+        if (!value) return;
+        var el = document.querySelector('input[name="' + name + '"][value="' + value + '"]');
+        if (el) el.checked = true;
+    }
+
+    function setCheckboxes(name, csv) {
+        document.querySelectorAll('input[name="' + name + '"]').forEach(function(cb) { cb.checked = false; });
+        if (!csv) return;
+        csv.split(',').forEach(function(v) {
+            var trimmed = v.trim();
+            var el = document.querySelector('input[name="' + name + '"][value="' + trimmed + '"]');
+            if (el) el.checked = true;
+        });
+    }
+
+    function setInput(id, value) {
+        var el = document.getElementById(id);
+        if (el && value != null && value !== '') el.value = value;
+    }
+
+    function setObsInput(radioName, value) {
+        if (!value) return;
+        var radio = document.querySelector('input[name="' + radioName + '"]');
+        if (!radio) return;
+        var row = radio.closest('tr');
+        if (!row) return;
+        var obsInput = row.querySelector('.obs-input');
+        if (obsInput) obsInput.value = value;
+    }
+
+    function findCard(firstInputName) {
+        var el = document.querySelector('input[name="' + firstInputName + '"]');
+        return el ? el.closest('.card') : null;
+    }
+
+    function setSectionStatus(card, status) {
+        if (!card) return;
+        var sel = card.querySelector('.status-select');
+        if (sel) {
+            sel.value = status || 'funcionando';
+            toggleEquipment(sel);
+        }
+    }
+
+    document.getElementById('fecha').value = new Date().toISOString().split('T')[0];
+
+    document.getElementById('turno').value = prev.turno || '';
+    document.getElementById('operario1').value = prev.operario1 || '';
+    filterOperario2();
+    document.getElementById('operario2').value = prev.operario2 || '';
+    document.getElementById('observaciones_generales').value = prev.observaciones_generales || '';
+
+    var obs = prev.observaciones_campo || {};
+
+    ['A', 'B', 'C'].forEach(function(L) {
         var l = L.toLowerCase();
         var d = prev['desarenador_' + L] || {};
+
+        var comp = d.compuerta_entrada || {};
+        setSectionStatus(findCard(l + '_comp_scada'), comp.estado);
+        setCheckboxes(l + '_comp_scada', comp.scada);
+        setRadio(l + '_comp_limpieza', comp.limpieza);
+        setRadio(l + '_comp_ruidos', comp.ruidos);
+        setInput(l + '_comp_arranques', comp.arranques);
+        setObsInput(l + '_comp_limpieza', obs[l + '_comp_limpieza']);
+        setObsInput(l + '_comp_ruidos', obs[l + '_comp_ruidos']);
+
         var pte = d.puente || {};
-        if (pte.horas) { var el = document.getElementById(l + '_puente_horas'); if (el) el.value = pte.horas; }
-        var ah = (d.aireadores || {}).horas || {};
-        ['a', 'b', 'c', 'd', 'e'].forEach(function(k) {
-            if (ah[k]) { var e = document.getElementById(l + '_horas_' + k); if (e) e.value = ah[k]; }
-        });
+        setSectionStatus(findCard(l + '_puente_scada'), pte.estado);
+        setCheckboxes(l + '_puente_scada', pte.scada);
+        setInput(l + '_puente_horas', pte.horas);
+        setRadio(l + '_puente_despl', pte.desplazamiento);
+        setRadio(l + '_puente_rasquetas', pte.rasquetas);
+        setRadio(l + '_puente_anomalias', pte.anomalias);
+        setRadio(l + '_puente_guias', pte.guias_ruedas);
+        setRadio(l + '_puente_fcarrera', pte.finales_carrera);
+        setRadio(l + '_puente_rozamientos', pte.rozamientos);
+        setRadio(l + '_puente_lonas', pte.lonas_limpias);
+        setRadio(l + '_puente_sujeciones', pte.lonas_sujeciones);
+        setObsInput(l + '_puente_despl', obs[l + '_puente_despl']);
+        setObsInput(l + '_puente_rasquetas', obs[l + '_puente_rasquetas']);
+        setObsInput(l + '_puente_anomalias', obs[l + '_puente_anomalias']);
+        setObsInput(l + '_puente_guias', obs[l + '_puente_guias']);
+        setObsInput(l + '_puente_fcarrera', obs[l + '_puente_fcarrera']);
+        setObsInput(l + '_puente_rozamientos', obs[l + '_puente_rozamientos']);
+        setObsInput(l + '_puente_lonas', obs[l + '_puente_lonas']);
+        setObsInput(l + '_puente_sujeciones', obs[l + '_puente_sujeciones']);
+
+        var bomba = d.bomba_arenas || {};
+        setSectionStatus(findCard(l + '_bomba_func'), bomba.estado);
+        setRadio(l + '_bomba_func', bomba.funcionamiento);
+        setRadio(l + '_bomba_ruidos', bomba.ruidos_fugas);
+        setObsInput(l + '_bomba_func', obs[l + '_bomba_func']);
+        setObsInput(l + '_bomba_ruidos', obs[l + '_bomba_ruidos']);
+
+        var air = d.aireadores || {};
+        setSectionStatus(findCard(l + '_aireadores_scada'), air.estado);
+        setCheckboxes(l + '_aireadores_scada', air.scada);
+        setRadio(l + '_aireadores_ruidos', air.ruidos);
+        var ah = air.horas || {};
+        setInput(l + '_horas_a', ah.a);
+        setInput(l + '_horas_b', ah.b);
+        setInput(l + '_horas_c', ah.c);
+        setInput(l + '_horas_d', ah.d);
+        setInput(l + '_horas_e', ah.e);
+        setObsInput(l + '_aireadores_ruidos', obs[l + '_aireadores_ruidos']);
+
+        var grasas = d.compuerta_grasas || {};
+        setSectionStatus(findCard(l + '_grasas_scada'), grasas.estado);
+        setCheckboxes(l + '_grasas_scada', grasas.scada);
+        setInput(l + '_grasas_arranques1', grasas.arranques);
+        setRadio(l + '_grasas_limpieza', grasas.limpieza);
+        setRadio(l + '_grasas_ruidos', grasas.ruidos);
+        setRadio(l + '_grasas_electrov', grasas.electrovalvula);
+        setInput(l + '_grasas_arranques2', grasas.electrovalvula_arranques);
+        setObsInput(l + '_grasas_limpieza', obs[l + '_grasas_limpieza']);
+        setObsInput(l + '_grasas_ruidos', obs[l + '_grasas_ruidos']);
+        setObsInput(l + '_grasas_electrov', obs[l + '_grasas_electrov']);
     });
+
+    var cont = prev.contenedor_arenas_grasas || {};
+    var contCard = document.querySelector('#contenedor .card');
+    setSectionStatus(contCard, cont.estado);
+    setRadio('cont_tubo_agua', cont.tubo_agua);
+    setRadio('cont_retirar_agua', cont.retirar_agua);
+    setInput('cont_cant_agua', cont.cant_agua);
+    setRadio('cont_vaciado_gavetas', cont.vaciado_gavetas);
+    setInput('cont_cant_gavetas', cont.cant_gavetas);
+    setObsInput('cont_tubo_agua', obs.cont_tubo_agua);
+    setObsInput('cont_retirar_agua', obs.cont_retirar_agua);
+    setObsInput('cont_vaciado_gavetas', obs.cont_vaciado_gavetas);
+
+    loadingRecord = false;
 }
 
 function importBackupFile() {
@@ -898,9 +989,7 @@ document.getElementById('fecha').addEventListener('change', function () {
     var prev = list[list.length - 1];
     if (!prev || !prev.fecha) return;
     if (this.value > prev.fecha) {
-        if (confirm('Dia anterior tiene registro (' + prev.fecha + '). Cargar horas?')) {
-            loadPreviousHours();
-        }
+        autoLoadPreviousDay();
     }
     this.dataset.prevFecha = this.value;
 });
