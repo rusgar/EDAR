@@ -1,0 +1,1778 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checklist Noche - EDAR Gijón Este</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<div class="container">
+    <header>
+        <div class="header-content">
+            <div class="header-text">
+                <h1>EDAR GIJÓN ESTE - Grupo Tragsa</h1>
+                <p>Checklist Mantenimiento Preventivo - Turno de Noches</p>
+            </div>
+            <img src="img/logo_cabecera.png" alt="Grupo Tragsa" class="header-logo">
+        </div>
+    </header>
+    <div style="margin:10px 0;">
+        <a href="../index.html" style="color:var(--primary); text-decoration:none; font-size:0.9rem;">← Volver al selector de turno</a>
+    </div>
+    <form id="checklistForm">
+        <div class="card">
+            <div class="card-title">Información del Turno y Control</div>
+            <div class="grid-2">
+                <div class="form-group"><label>Fecha</label><input type="date" id="fecha" required></div>
+                <div class="form-group"><label>Turno</label><select id="turno" required><option value="">Seleccionar...</option><option value="Noches" selected>Noches</option></select></div>
+                <div class="form-group"><label>Operario 1</label><select id="operario1" required onchange="filterOperario2()"><option value="">Seleccionar operario...</option><option value="Ana">Ana</option><option value="Carlos">Carlos</option><option value="Edu">Edu</option><option value="Luis">Luis</option><option value="Sara">Sara</option></select></div>
+                <div class="form-group"><label>Operario 2</label><select id="operario2"><option value="">Seleccionar operario...</option><option value="Ana">Ana</option><option value="Carlos">Carlos</option><option value="Edu">Edu</option><option value="Luis">Luis</option><option value="Sara">Sara</option></select></div>
+            </div>
+        </div>
+        <div class="tabs">
+            <button type="button" class="tab-btn active" onclick="switchTab('general', this)">General</button>
+            <button type="button" class="tab-btn" onclick="switchTab('bombeo', this)">Bombeo Complementario</button>
+            <button type="button" class="tab-btn" onclick="switchTab('auxiliares', this)">Servicios Auxiliares</button>
+            <button type="button" class="tab-btn" onclick="switchTab('fangos', this)">Fangos</button>
+            <button type="button" class="tab-btn" onclick="switchTab('observaciones', this)">Observaciones</button>
+            <button type="button" class="tab-btn" onclick="switchTab('resumenTab', this)">Registros</button>
+        </div>
+        <div id="general" class="tab-content active">
+            <div class="card">
+                <div class="section-header">CAUDALÍMETRO DE ENTRADA (4EL_FIT001)</div>
+                        <div class="equipment-status">
+                            <label>Estado:</label>
+                            <select class="status-select" onchange="toggleEquipment(this)">
+                                <option value="funcionando">Funcionando</option>
+                                <option value="parado">Parado</option>
+                                <option value="defecto">Defecto eléctrico</option>
+                                <option value="no_funciona">No funciona</option>
+                            </select>
+                        </div>
+                <table>
+                    <thead><tr><th>Punto de Inspección</th><th>Control</th><th>Observaciones / Dato</th></tr></thead>
+                    <tbody>
+                        <tr>
+                            <td>1. El caudalímetro de entrada funciona correctamente</td>
+                            <td><label class="radio-label"><input type="radio" name="n_caudal_entrada" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_caudal_entrada" value="NO"> NO</label></td>
+                            <td><input type="text" id="n_caudal_entrada_valor" placeholder="Indicar valor Q ="></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="card">
+                <div class="section-header">CLASIFICADOR DE ARENAS (422_SD001)</div>
+                        <div class="equipment-status">
+                            <label>Estado:</label>
+                            <select class="status-select" onchange="toggleEquipment(this)">
+                                <option value="funcionando">Funcionando</option>
+                                <option value="parado">Parado</option>
+                                <option value="defecto">Defecto eléctrico</option>
+                                <option value="no_funciona">No funciona</option>
+                            </select>
+                        </div>
+                <table>
+                    <thead><tr><th>Punto de Inspección</th><th>Control</th><th>Observaciones / Dato</th></tr></thead>
+                    <tbody>
+                        <tr>
+                            <td>1. Estado del equipo en el SCADA (marcar lo que proceda)</td>
+                            <td><div class="scada-group"><label class="checkbox-label"><input type="checkbox" name="n_clasificador_scada" value="R"> R</label><label class="checkbox-label"><input type="checkbox" name="n_clasificador_scada" value="L"> L</label><label class="checkbox-label"><input type="checkbox" name="n_clasificador_scada" value="M"> M</label><label class="checkbox-label"><input type="checkbox" name="n_clasificador_scada" value="A"> A</label></div></td>
+                            <td><input type="number" id="n_clasificador_horas" placeholder="Nº horas"></td>
+                        </tr>
+                        <tr>
+                            <td>2. El equipo funciona correctamente. Extrae arenas</td>
+                            <td><label class="radio-label"><input type="radio" name="n_clasificador_func" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_clasificador_func" value="NO"> NO</label></td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>3. Presencia de ruidos, fugas o anomalías</td>
+                            <td><label class="radio-label"><input type="radio" name="n_clasificador_ruidos" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_clasificador_ruidos" value="NO"> NO</label></td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>4. Nivel de agua en arenas anormal</td>
+                            <td><label class="radio-label"><input type="radio" name="n_clasificador_agua" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_clasificador_agua" value="NO"> NO</label></td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>5. Nivel de arenas en el contenedor</td>
+                            <td><label class="radio-label"><input type="radio" name="n_clasificador_nivel" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_clasificador_nivel" value="NO"> NO</label></td>
+                            <td><input type="text" id="n_clasificador_nivel_valor" placeholder="Indicar nivel"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="card">
+                <div class="section-header">SEPARADOR DE GRASAS (423_TD001)</div>
+                        <div class="equipment-status">
+                            <label>Estado:</label>
+                            <select class="status-select" onchange="toggleEquipment(this)">
+                                <option value="funcionando">Funcionando</option>
+                                <option value="parado">Parado</option>
+                                <option value="defecto">Defecto eléctrico</option>
+                                <option value="no_funciona">No funciona</option>
+                            </select>
+                        </div>
+                <table>
+                    <thead><tr><th>Punto de Inspección</th><th>Control</th><th>Observaciones / Dato</th></tr></thead>
+                    <tbody>
+                        <tr>
+                            <td>1. Estado del equipo en el SCADA (marcar lo que proceda)</td>
+                            <td><div class="scada-group"><label class="checkbox-label"><input type="checkbox" name="n_separador_scada" value="R"> R</label><label class="checkbox-label"><input type="checkbox" name="n_separador_scada" value="L"> L</label><label class="checkbox-label"><input type="checkbox" name="n_separador_scada" value="M"> M</label><label class="checkbox-label"><input type="checkbox" name="n_separador_scada" value="A"> A</label></div></td>
+                            <td><input type="number" id="n_separador_horas" placeholder="Nº horas"></td>
+                        </tr>
+                        <tr>
+                            <td>2. El equipo funciona correctamente. Extrae grasas</td>
+                            <td><label class="radio-label"><input type="radio" name="n_separador_func" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_separador_func" value="NO"> NO</label></td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>3. Presencia de ruidos, fugas o anomalías</td>
+                            <td><label class="radio-label"><input type="radio" name="n_separador_ruidos" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_separador_ruidos" value="NO"> NO</label></td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>4. Nivel de agua en grasas anormal</td>
+                            <td><label class="radio-label"><input type="radio" name="n_separador_agua" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_separador_agua" value="NO"> NO</label></td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>5. Nivel de grasas en el contenedor</td>
+                            <td><label class="radio-label"><input type="radio" name="n_separador_nivel" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_separador_nivel" value="NO"> NO</label></td>
+                            <td><input type="text" id="n_separador_nivel_valor" placeholder="Indicar nivel"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="card">
+                <div class="section-header">POZO BOMBEO DESAGÜE GRASAS Y ARENAS </div>
+                        <div class="equipment-status">
+                            <label>Estado:</label>
+                            <select class="status-select" onchange="toggleEquipment(this)">
+                                <option value="funcionando">Funcionando</option>
+                                <option value="parado">Parado</option>
+                                <option value="defecto">Defecto eléctrico</option>
+                                <option value="no_funciona">No funciona</option>
+                            </select>
+                        </div>
+                <table>
+                    <thead><tr><th>Punto de Inspección</th><th>Control</th><th>Observaciones / Dato</th></tr></thead>
+                    <tbody>
+                        <tr>
+                            <td>1. La bomba funciona correctamente. Extrae agua</td>
+                            <td><label class="radio-label"><input type="radio" name="n_pozo_desague_bomba" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_pozo_desague_bomba" value="NO"> NO</label></td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>2. Presencia de ruidos o anomalías</td>
+                            <td><label class="radio-label"><input type="radio" name="n_pozo_desague_ruidos" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_pozo_desague_ruidos" value="NO"> NO</label></td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>3. La bomba se encuentra trabada</td>
+                            <td><label class="radio-label"><input type="radio" name="n_pozo_desague_trabada" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_pozo_desague_trabada" value="NO"> NO</label></td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>4. La tolva se encuentra limpia, sin trapos ni enredos</td>
+                            <td><label class="radio-label"><input type="radio" name="n_pozo_desague_tolva" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_pozo_desague_tolva" value="NO"> NO</label></td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>5. El pozo se encuentra limpio</td>
+                            <td><label class="radio-label"><input type="radio" name="n_pozo_desague_limpio" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_pozo_desague_limpio" value="NO"> NO</label></td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="card">
+                <div class="section-header">POZO BOMBEO DE GRASAS (413A_PO002)</div>
+                        <div class="equipment-status">
+                            <label>Estado:</label>
+                            <select class="status-select" onchange="toggleEquipment(this)">
+                                <option value="funcionando">Funcionando</option>
+                                <option value="parado">Parado</option>
+                                <option value="defecto">Defecto eléctrico</option>
+                                <option value="no_funciona">No funciona</option>
+                            </select>
+                        </div>
+                <table>
+                    <thead><tr><th>Punto de Inspección</th><th>Control</th><th>Observaciones / Dato</th></tr></thead>
+                    <tbody>
+                        <tr>
+                            <td>1. Estado de las bombas en el SCADA (marcar lo que proceda)</td>
+                            <td><div class="scada-group"><label class="checkbox-label"><input type="checkbox" name="n_pozo_grasas_a_scada" value="R"> R</label><label class="checkbox-label"><input type="checkbox" name="n_pozo_grasas_a_scada" value="L"> L</label><label class="checkbox-label"><input type="checkbox" name="n_pozo_grasas_a_scada" value="M"> M</label><label class="checkbox-label"><input type="checkbox" name="n_pozo_grasas_a_scada" value="A"> A</label></div></td>
+                            <td><input type="number" id="n_pozo_grasas_a_horas" placeholder="Nº horas"></td>
+                        </tr>
+                        <tr>
+                            <td>2. Las bombas funcionan correctamente. Extraen agua</td>
+                            <td><label class="radio-label"><input type="radio" name="n_pozo_grasas_a_func" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_pozo_grasas_a_func" value="NO"> NO</label></td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>3. Presencia de ruidos, fugas o anomalías</td>
+                            <td><label class="radio-label"><input type="radio" name="n_pozo_grasas_a_ruidos" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_pozo_grasas_a_ruidos" value="NO"> NO</label></td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>4. Las bombas se encuentran trabadas</td>
+                            <td><label class="radio-label"><input type="radio" name="n_pozo_grasas_a_trab" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_pozo_grasas_a_trab" value="NO"> NO</label></td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>5. Las boyas se encuentran limpias, sin trapos ni enredos</td>
+                            <td><label class="radio-label"><input type="radio" name="n_pozo_grasas_a_boyas" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_pozo_grasas_a_boyas" value="NO"> NO</label></td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>6. Correcto nivel de agua en el pozo</td>
+                            <td><label class="radio-label"><input type="radio" name="n_pozo_grasas_a_nivel" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_pozo_grasas_a_nivel" value="NO"> NO</label></td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="card">
+                <div class="section-header">POZO BOMBEO DE GRASAS (413B_PO002)</div>
+                        <div class="equipment-status">
+                            <label>Estado:</label>
+                            <select class="status-select" onchange="toggleEquipment(this)">
+                                <option value="funcionando">Funcionando</option>
+                                <option value="parado">Parado</option>
+                                <option value="defecto">Defecto eléctrico</option>
+                                <option value="no_funciona">No funciona</option>
+                            </select>
+                        </div>
+                <table>
+                    <thead><tr><th>Punto de Inspección</th><th>Control</th><th>Observaciones / Dato</th></tr></thead>
+                    <tbody>
+                        <tr>
+                            <td>1. Estado de las bombas en el SCADA (marcar lo que proceda)</td>
+                            <td><div class="scada-group"><label class="checkbox-label"><input type="checkbox" name="n_pozo_grasas_b_scada" value="R"> R</label><label class="checkbox-label"><input type="checkbox" name="n_pozo_grasas_b_scada" value="L"> L</label><label class="checkbox-label"><input type="checkbox" name="n_pozo_grasas_b_scada" value="M"> M</label><label class="checkbox-label"><input type="checkbox" name="n_pozo_grasas_b_scada" value="A"> A</label></div></td>
+                            <td><input type="number" id="n_pozo_grasas_b_horas" placeholder="Nº horas"></td>
+                        </tr>
+                        <tr>
+                            <td>2. Las bombas funcionan correctamente. Extraen agua</td>
+                            <td><label class="radio-label"><input type="radio" name="n_pozo_grasas_b_func" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_pozo_grasas_b_func" value="NO"> NO</label></td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>3. Presencia de ruidos, fugas o anomalías</td>
+                            <td><label class="radio-label"><input type="radio" name="n_pozo_grasas_b_ruidos" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_pozo_grasas_b_ruidos" value="NO"> NO</label></td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>4. Las bombas se encuentran trabadas</td>
+                            <td><label class="radio-label"><input type="radio" name="n_pozo_grasas_b_trab" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_pozo_grasas_b_trab" value="NO"> NO</label></td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="card">
+                <div class="section-header">POZO VACIADO DESARENADORES (321A_PO001A)</div>
+                        <div class="equipment-status">
+                            <label>Estado:</label>
+                            <select class="status-select" onchange="toggleEquipment(this)">
+                                <option value="funcionando">Funcionando</option>
+                                <option value="parado">Parado</option>
+                                <option value="defecto">Defecto eléctrico</option>
+                                <option value="no_funciona">No funciona</option>
+                            </select>
+                        </div>
+                <table>
+                    <thead><tr><th>Punto de Inspección</th><th>Control</th><th>Observaciones / Dato</th></tr></thead>
+                    <tbody>
+                        <tr>
+                            <td>1. Estado de las bombas en el SCADA (marcar lo que proceda)</td>
+                            <td><div class="scada-group"><label class="checkbox-label"><input type="checkbox" name="n_pozovac_a1_scada" value="R"> R</label><label class="checkbox-label"><input type="checkbox" name="n_pozovac_a1_scada" value="L"> L</label><label class="checkbox-label"><input type="checkbox" name="n_pozovac_a1_scada" value="M"> M</label><label class="checkbox-label"><input type="checkbox" name="n_pozovac_a1_scada" value="A"> A</label></div></td>
+                            <td><input type="number" id="n_pozovac_a1_horas" placeholder="Nº horas"></td>
+                        </tr>
+                        <tr>
+                            <td>2. Las bombas funcionan correctamente. Extraen agua</td>
+                            <td><label class="radio-label"><input type="radio" name="n_pozovac_a1_func" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_pozovac_a1_func" value="NO"> NO</label></td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>3. Presencia de ruidos o anomalías</td>
+                            <td><label class="radio-label"><input type="radio" name="n_pozovac_a1_ruidos" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_pozovac_a1_ruidos" value="NO"> NO</label></td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>4. Las bombas se encuentran trabadas</td>
+                            <td><label class="radio-label"><input type="radio" name="n_pozovac_a1_trab" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_pozovac_a1_trab" value="NO"> NO</label></td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>5. Las boyas se encuentran limpias, sin trapos ni enredos</td>
+                            <td><label class="radio-label"><input type="radio" name="n_pozovac_a1_boyas" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_pozovac_a1_boyas" value="NO"> NO</label></td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>6. Correcto nivel de agua en el pozo</td>
+                            <td><label class="radio-label"><input type="radio" name="n_pozovac_a1_nivel" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_pozovac_a1_nivel" value="NO"> NO</label></td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="card">
+                <div class="section-header">POZO VACIADO DESARENADORES (321A_PO001B)</div>
+                        <div class="equipment-status">
+                            <label>Estado:</label>
+                            <select class="status-select" onchange="toggleEquipment(this)">
+                                <option value="funcionando">Funcionando</option>
+                                <option value="parado">Parado</option>
+                                <option value="defecto">Defecto eléctrico</option>
+                                <option value="no_funciona">No funciona</option>
+                            </select>
+                        </div>
+                <table>
+                    <thead><tr><th>Punto de Inspección</th><th>Control</th><th>Observaciones / Dato</th></tr></thead>
+                    <tbody>
+                        <tr>
+                            <td>1. Estado de las bombas en el SCADA (marcar lo que proceda)</td>
+                            <td><div class="scada-group"><label class="checkbox-label"><input type="checkbox" name="n_pozovac_a2_scada" value="R"> R</label><label class="checkbox-label"><input type="checkbox" name="n_pozovac_a2_scada" value="L"> L</label><label class="checkbox-label"><input type="checkbox" name="n_pozovac_a2_scada" value="M"> M</label><label class="checkbox-label"><input type="checkbox" name="n_pozovac_a2_scada" value="A"> A</label></div></td>
+                            <td><input type="number" id="n_pozovac_a2_horas" placeholder="Nº horas"></td>
+                        </tr>
+                        <tr>
+                            <td>2. Las bombas funcionan correctamente. Extraen agua</td>
+                            <td><label class="radio-label"><input type="radio" name="n_pozovac_a2_func" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_pozovac_a2_func" value="NO"> NO</label></td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>3. Presencia de ruidos o anomalías</td>
+                            <td><label class="radio-label"><input type="radio" name="n_pozovac_a2_ruidos" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_pozovac_a2_ruidos" value="NO"> NO</label></td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>4. Las bombas se encuentran trabadas</td>
+                            <td><label class="radio-label"><input type="radio" name="n_pozovac_a2_trab" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_pozovac_a2_trab" value="NO"> NO</label></td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div id="bombeo" class="tab-content">
+            <div class="card">
+                <div class="section-header">POZO VACIADO DESARENADORES (323A_PO001C)</div>
+                        <div class="equipment-status">
+                            <label>Estado:</label>
+                            <select class="status-select" onchange="toggleEquipment(this)">
+                                <option value="funcionando">Funcionando</option>
+                                <option value="parado">Parado</option>
+                                <option value="defecto">Defecto eléctrico</option>
+                                <option value="no_funciona">No funciona</option>
+                            </select>
+                        </div>
+                <table>
+                    <thead><tr><th>Punto de Inspección</th><th>Control</th><th>Observaciones / Dato</th></tr></thead>
+                    <tbody>
+                        <tr>
+                            <td>1. Estado de las bombas en el SCADA (marcar lo que proceda)</td>
+                            <td><div class="scada-group"><label class="checkbox-label"><input type="checkbox" name="n_pozovac_c_scada" value="R"> R</label><label class="checkbox-label"><input type="checkbox" name="n_pozovac_c_scada" value="L"> L</label><label class="checkbox-label"><input type="checkbox" name="n_pozovac_c_scada" value="M"> M</label><label class="checkbox-label"><input type="checkbox" name="n_pozovac_c_scada" value="A"> A</label></div></td>
+                            <td><input type="number" id="n_pozovac_c_horas" placeholder="Nº horas"></td>
+                        </tr>
+                        <tr>
+                            <td>2. Las bombas funcionan correctamente. Extraen agua</td>
+                            <td><label class="radio-label"><input type="radio" name="n_pozovac_c_func" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_pozovac_c_func" value="NO"> NO</label></td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>3. Presencia de ruidos o anomalías</td>
+                            <td><label class="radio-label"><input type="radio" name="n_pozovac_c_ruidos" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_pozovac_c_ruidos" value="NO"> NO</label></td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>4. Las bombas se encuentran trabadas</td>
+                            <td><label class="radio-label"><input type="radio" name="n_pozovac_c_trab" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_pozovac_c_trab" value="NO"> NO</label></td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="card">
+                <div class="section-header">POZO BOMBEO COMPLEMENTARIO (582A_PO001)</div>
+                        <div class="equipment-status">
+                            <label>Estado:</label>
+                            <select class="status-select" onchange="toggleEquipment(this)">
+                                <option value="funcionando">Funcionando</option>
+                                <option value="parado">Parado</option>
+                                <option value="defecto">Defecto eléctrico</option>
+                                <option value="no_funciona">No funciona</option>
+                            </select>
+                        </div>
+                <table>
+                    <thead><tr><th>Punto de Inspección</th><th>Control</th><th>Observaciones / Dato</th></tr></thead>
+                    <tbody>
+                        <tr>
+                            <td>1. Estado de las bombas en el SCADA (marcar lo que proceda)</td>
+                            <td><div class="scada-group"><label class="checkbox-label"><input type="checkbox" name="n_comp_a_scada" value="R"> R</label><label class="checkbox-label"><input type="checkbox" name="n_comp_a_scada" value="L"> L</label><label class="checkbox-label"><input type="checkbox" name="n_comp_a_scada" value="M"> M</label><label class="checkbox-label"><input type="checkbox" name="n_comp_a_scada" value="A"> A</label></div></td>
+                            <td><input type="number" id="n_comp_a_horas" placeholder="Nº horas"></td>
+                        </tr>
+                        <tr>
+                            <td>2. Las bombas funcionan correctamente. Extraen agua</td>
+                            <td><label class="radio-label"><input type="radio" name="n_comp_a_func" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_comp_a_func" value="NO"> NO</label></td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>3. Presencia de ruidos o anomalías</td>
+                            <td><label class="radio-label"><input type="radio" name="n_comp_a_ruidos" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_comp_a_ruidos" value="NO"> NO</label></td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>4. Las bombas se encuentran trabadas</td>
+                            <td><label class="radio-label"><input type="radio" name="n_comp_a_trab" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_comp_a_trab" value="NO"> NO</label></td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="card">
+                <div class="section-header">POZO BOMBEO COMPLEMENTARIO (582B_PO001)</div>
+                        <div class="equipment-status">
+                            <label>Estado:</label>
+                            <select class="status-select" onchange="toggleEquipment(this)">
+                                <option value="funcionando">Funcionando</option>
+                                <option value="parado">Parado</option>
+                                <option value="defecto">Defecto eléctrico</option>
+                                <option value="no_funciona">No funciona</option>
+                            </select>
+                        </div>
+                <table>
+                    <thead><tr><th>Punto de Inspección</th><th>Control</th><th>Observaciones / Dato</th></tr></thead>
+                    <tbody>
+                        <tr>
+                            <td>1. Estado de las bombas en el SCADA (marcar lo que proceda)</td>
+                            <td><div class="scada-group"><label class="checkbox-label"><input type="checkbox" name="n_comp_b_scada" value="R"> R</label><label class="checkbox-label"><input type="checkbox" name="n_comp_b_scada" value="L"> L</label><label class="checkbox-label"><input type="checkbox" name="n_comp_b_scada" value="M"> M</label><label class="checkbox-label"><input type="checkbox" name="n_comp_b_scada" value="A"> A</label></div></td>
+                            <td><input type="number" id="n_comp_b_horas" placeholder="Nº horas"></td>
+                        </tr>
+                        <tr>
+                            <td>2. Las bombas funcionan correctamente. Extraen agua</td>
+                            <td><label class="radio-label"><input type="radio" name="n_comp_b_func" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_comp_b_func" value="NO"> NO</label></td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>3. Presencia de ruidos o anomalías</td>
+                            <td><label class="radio-label"><input type="radio" name="n_comp_b_ruidos" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_comp_b_ruidos" value="NO"> NO</label></td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>4. Las bombas se encuentran trabadas</td>
+                            <td><label class="radio-label"><input type="radio" name="n_comp_b_trab" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_comp_b_trab" value="NO"> NO</label></td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="card">
+                <div class="section-header">POZO BOMBEO COMPLEMENTARIO (582C_PO001)</div>
+                        <div class="equipment-status">
+                            <label>Estado:</label>
+                            <select class="status-select" onchange="toggleEquipment(this)">
+                                <option value="funcionando">Funcionando</option>
+                                <option value="parado">Parado</option>
+                                <option value="defecto">Defecto eléctrico</option>
+                                <option value="no_funciona">No funciona</option>
+                            </select>
+                        </div>
+                <table>
+                    <thead><tr><th>Punto de Inspección</th><th>Control</th><th>Observaciones / Dato</th></tr></thead>
+                    <tbody>
+                        <tr>
+                            <td>1. Estado de las bombas en el SCADA (marcar lo que proceda)</td>
+                            <td><div class="scada-group"><label class="checkbox-label"><input type="checkbox" name="n_comp_c_scada" value="R"> R</label><label class="checkbox-label"><input type="checkbox" name="n_comp_c_scada" value="L"> L</label><label class="checkbox-label"><input type="checkbox" name="n_comp_c_scada" value="M"> M</label><label class="checkbox-label"><input type="checkbox" name="n_comp_c_scada" value="A"> A</label></div></td>
+                            <td><input type="number" id="n_comp_c_horas" placeholder="Nº horas"></td>
+                        </tr>
+                        <tr>
+                            <td>2. Las bombas funcionan correctamente. Extraen agua</td>
+                            <td><label class="radio-label"><input type="radio" name="n_comp_c_func" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_comp_c_func" value="NO"> NO</label></td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>3. Presencia de ruidos o anomalías</td>
+                            <td><label class="radio-label"><input type="radio" name="n_comp_c_ruidos" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_comp_c_ruidos" value="NO"> NO</label></td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>4. Las bombas se encuentran trabadas</td>
+                            <td><label class="radio-label"><input type="radio" name="n_comp_c_trab" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_comp_c_trab" value="NO"> NO</label></td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="card">
+                <div class="section-header">SENSOR DE NIVEL BOMBEO COMPLEMENTARIO (582_LIT001)</div>
+                        <div class="equipment-status">
+                            <label>Estado:</label>
+                            <select class="status-select" onchange="toggleEquipment(this)">
+                                <option value="funcionando">Funcionando</option>
+                                <option value="parado">Parado</option>
+                                <option value="defecto">Defecto eléctrico</option>
+                                <option value="no_funciona">No funciona</option>
+                            </select>
+                        </div>
+                <table>
+                    <thead><tr><th>Punto de Inspección</th><th>Control</th><th>Observaciones / Dato</th></tr></thead>
+                    <tbody>
+                        <tr>
+                            <td>1. El sensor de nivel funciona correctamente</td>
+                            <td><label class="radio-label"><input type="radio" name="n_sensor_comp_func" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_sensor_comp_func" value="NO"> NO</label></td>
+                            <td><input type="text" id="n_sensor_comp_func_valor" placeholder="Indicar valor %"></td>
+                        </tr>
+                        <tr>
+                            <td>2. Las boyas se encuentran limpias, sin trapos ni enredos</td>
+                            <td><label class="radio-label"><input type="radio" name="n_sensor_comp_boyas" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_sensor_comp_boyas" value="NO"> NO</label></td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>3. Correcto nivel de agua en el pozo</td>
+                            <td><label class="radio-label"><input type="radio" name="n_sensor_comp_nivel" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_sensor_comp_nivel" value="NO"> NO</label></td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="card">
+                <div class="section-header">CAUDALÍMETRO DE SALIDA (534_FIT0300)</div>
+                        <div class="equipment-status">
+                            <label>Estado:</label>
+                            <select class="status-select" onchange="toggleEquipment(this)">
+                                <option value="funcionando">Funcionando</option>
+                                <option value="parado">Parado</option>
+                                <option value="defecto">Defecto eléctrico</option>
+                                <option value="no_funciona">No funciona</option>
+                            </select>
+                        </div>
+                <table>
+                    <thead><tr><th>Punto de Inspección</th><th>Control</th><th>Observaciones / Dato</th></tr></thead>
+                    <tbody>
+                        <tr>
+                            <td>1. El caudalímetro de salida funciona correctamente</td>
+                            <td><label class="radio-label"><input type="radio" name="n_caudal_salida" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_caudal_salida" value="NO"> NO</label></td>
+                            <td><input type="text" id="n_caudal_salida_valor" placeholder="Indicar valor Q ="></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div id="auxiliares" class="tab-content">
+            <div class="card">
+                <div class="section-header">GRUPO DE PRESIÓN AGUA DE SERVICIOS (702A_PO002)</div>
+                        <div class="equipment-status">
+                            <label>Estado:</label>
+                            <select class="status-select" onchange="toggleEquipment(this)">
+                                <option value="funcionando">Funcionando</option>
+                                <option value="parado">Parado</option>
+                                <option value="defecto">Defecto eléctrico</option>
+                                <option value="no_funciona">No funciona</option>
+                            </select>
+                        </div>
+                <table>
+                    <thead><tr><th>Punto de Inspección</th><th>Control</th><th>Observaciones / Dato</th></tr></thead>
+                    <tbody>
+                        <tr>
+                            <td>1. Las bombas funcionan correctamente. Tienen presión</td>
+                            <td><label class="radio-label"><input type="radio" name="n_grupo_presion_func" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_grupo_presion_func" value="NO"> NO</label></td>
+                            <td><input type="text" id="n_grupo_presion_func_valor" placeholder="Indicar valor Bar"></td>
+                        </tr>
+                        <tr>
+                            <td>2. Presencia de ruidos, fugas o anomalías</td>
+                            <td><label class="radio-label"><input type="radio" name="n_grupo_presion_ruidos" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_grupo_presion_ruidos" value="NO"> NO</label></td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>3. Las bombas se encuentran trabadas</td>
+                            <td><label class="radio-label"><input type="radio" name="n_grupo_presion_trab" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_grupo_presion_trab" value="NO"> NO</label></td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>4. El funcionamiento es automático</td>
+                            <td><label class="radio-label"><input type="radio" name="n_grupo_presion_auto" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_grupo_presion_auto" value="NO"> NO</label></td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="card">
+                <div class="section-header">COMPRESOR AIRE DE SERVICIOS (812A_CP001)</div>
+                        <div class="equipment-status">
+                            <label>Estado:</label>
+                            <select class="status-select" onchange="toggleEquipment(this)">
+                                <option value="funcionando">Funcionando</option>
+                                <option value="parado">Parado</option>
+                                <option value="defecto">Defecto eléctrico</option>
+                                <option value="no_funciona">No funciona</option>
+                            </select>
+                        </div>
+                <table>
+                    <thead><tr><th>Punto de Inspección</th><th>Control</th><th>Observaciones / Dato</th></tr></thead>
+                    <tbody>
+                        <tr>
+                            <td>1. El equipo funciona correctamente</td>
+                            <td><label class="radio-label"><input type="radio" name="n_compresor_a_func" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_compresor_a_func" value="NO"> NO</label></td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>2. Presencia de ruidos, fugas o anomalías</td>
+                            <td><label class="radio-label"><input type="radio" name="n_compresor_a_ruidos" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_compresor_a_ruidos" value="NO"> NO</label></td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>3. Soplante 800B se encuentra en marcha</td>
+                            <td><label class="radio-label"><input type="radio" name="n_compresor_a_800b" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_compresor_a_800b" value="NO"> NO</label></td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>4. El manómetro funciona</td>
+                            <td><label class="radio-label"><input type="radio" name="n_compresor_a_mano" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_compresor_a_mano" value="NO"> NO</label></td>
+                            <td><input type="text" id="n_compresor_a_mano_valor" placeholder="Indicar valor Bar"></td>
+                        </tr>
+                        <tr>
+                            <td>5. Horas de funcionamiento</td>
+                            <td><label class="radio-label"><input type="radio" name="n_compresor_a_horas" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_compresor_a_horas" value="NO"> NO</label></td>
+                            <td><input type="text" id="n_compresor_a_horas_valor" placeholder="Indicar horas"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="card">
+                <div class="section-header">COMPRESOR AIRE DE SERVICIO (RESERVA) (812B_CP001)</div>
+                        <div class="equipment-status">
+                            <label>Estado:</label>
+                            <select class="status-select" onchange="toggleEquipment(this)">
+                                <option value="funcionando">Funcionando</option>
+                                <option value="parado">Parado</option>
+                                <option value="defecto">Defecto eléctrico</option>
+                                <option value="no_funciona">No funciona</option>
+                            </select>
+                        </div>
+                <table>
+                    <thead><tr><th>Punto de Inspección</th><th>Control</th><th>Observaciones / Dato</th></tr></thead>
+                    <tbody>
+                        <tr>
+                            <td>1. El equipo funciona correctamente</td>
+                            <td><label class="radio-label"><input type="radio" name="n_compresor_b_func" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_compresor_b_func" value="NO"> NO</label></td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>2. Presencia de ruidos, fugas o anomalías</td>
+                            <td><label class="radio-label"><input type="radio" name="n_compresor_b_ruidos" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_compresor_b_ruidos" value="NO"> NO</label></td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>3. Nivel de aceite es correcto</td>
+                            <td><label class="radio-label"><input type="radio" name="n_compresor_b_aceite" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_compresor_b_aceite" value="NO"> NO</label></td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>4. El separador funciona</td>
+                            <td><label class="radio-label"><input type="radio" name="n_compresor_b_separador" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_compresor_b_separador" value="NO"> NO</label></td>
+                            <td><input type="text" id="n_compresor_b_separador_valor" placeholder="Indicar valor Bar"></td>
+                        </tr>
+                        <tr>
+                            <td>5. Horas de funcionamiento</td>
+                            <td><label class="radio-label"><input type="radio" name="n_compresor_b_horas" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_compresor_b_horas" value="NO"> NO</label></td>
+                            <td><input type="text" id="n_compresor_b_horas_valor" placeholder="Indicar horas"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="card">
+                <div class="section-header">COMPRESOR AIRE EQUIPO ANTI-INCENDIO (444A_BP001)</div>
+                        <div class="equipment-status">
+                            <label>Estado:</label>
+                            <select class="status-select" onchange="toggleEquipment(this)">
+                                <option value="funcionando">Funcionando</option>
+                                <option value="parado">Parado</option>
+                                <option value="defecto">Defecto eléctrico</option>
+                                <option value="no_funciona">No funciona</option>
+                            </select>
+                        </div>
+                <table>
+                    <thead><tr><th>Punto de Inspección</th><th>Control</th><th>Observaciones / Dato</th></tr></thead>
+                    <tbody>
+                        <tr>
+                            <td>1. El equipo funciona correctamente</td>
+                            <td><label class="radio-label"><input type="radio" name="n_anti_a_func" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_anti_a_func" value="NO"> NO</label></td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>2. Presencia de ruidos, fugas o anomalías</td>
+                            <td><label class="radio-label"><input type="radio" name="n_anti_a_ruidos" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_anti_a_ruidos" value="NO"> NO</label></td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>3. Nivel de aceite es correcto</td>
+                            <td><label class="radio-label"><input type="radio" name="n_anti_a_aceite" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_anti_a_aceite" value="NO"> NO</label></td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>4. La instalación es estanca</td>
+                            <td><label class="radio-label"><input type="radio" name="n_anti_a_estanca" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_anti_a_estanca" value="NO"> NO</label></td>
+                            <td><input type="text" id="n_anti_a_estanca_valor" placeholder="Indicar valor Bar"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="card">
+                <div class="section-header">COMPRESOR AIRE EQUIPO ANTI-INCENDIO (RESERVA) (444B_FT001)</div>
+                        <div class="equipment-status">
+                            <label>Estado:</label>
+                            <select class="status-select" onchange="toggleEquipment(this)">
+                                <option value="funcionando">Funcionando</option>
+                                <option value="parado">Parado</option>
+                                <option value="defecto">Defecto eléctrico</option>
+                                <option value="no_funciona">No funciona</option>
+                            </select>
+                        </div>
+                <table>
+                    <thead><tr><th>Punto de Inspección</th><th>Control</th><th>Observaciones / Dato</th></tr></thead>
+                    <tbody>
+                        <tr>
+                            <td>1. El equipo funciona correctamente</td>
+                            <td><label class="radio-label"><input type="radio" name="n_anti_b_func" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_anti_b_func" value="NO"> NO</label></td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>2. Presencia de ruidos, fugas o anomalías</td>
+                            <td><label class="radio-label"><input type="radio" name="n_anti_b_ruidos" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_anti_b_ruidos" value="NO"> NO</label></td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>3. Nivel de aceite es correcto</td>
+                            <td><label class="radio-label"><input type="radio" name="n_anti_b_aceite" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_anti_b_aceite" value="NO"> NO</label></td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>4. El manómetro funciona</td>
+                            <td><label class="radio-label"><input type="radio" name="n_anti_b_mano" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_anti_b_mano" value="NO"> NO</label></td>
+                            <td><input type="text" id="n_anti_b_mano_valor" placeholder="Indicar valor Bar"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="card">
+                <div class="section-header">VENTILADOR DE ADMISIÓN (711_CV001A)</div>
+                        <div class="equipment-status">
+                            <label>Estado:</label>
+                            <select class="status-select" onchange="toggleEquipment(this)">
+                                <option value="funcionando">Funcionando</option>
+                                <option value="parado">Parado</option>
+                                <option value="defecto">Defecto eléctrico</option>
+                                <option value="no_funciona">No funciona</option>
+                            </select>
+                        </div>
+                <table>
+                    <thead><tr><th>Punto de Inspección</th><th>Control</th><th>Observaciones / Dato</th></tr></thead>
+                    <tbody>
+                        <tr>
+                            <td>1. Estado del equipo en el SCADA (marcar lo que proceda)</td>
+                            <td><div class="scada-group"><label class="checkbox-label"><input type="checkbox" name="n_vent_adm_a_scada" value="R"> R</label><label class="checkbox-label"><input type="checkbox" name="n_vent_adm_a_scada" value="L"> L</label><label class="checkbox-label"><input type="checkbox" name="n_vent_adm_a_scada" value="M"> M</label><label class="checkbox-label"><input type="checkbox" name="n_vent_adm_a_scada" value="A"> A</label></div></td>
+                            <td><input type="number" id="n_vent_adm_a_horas" placeholder="Nº horas"></td>
+                        </tr>
+                        <tr>
+                            <td>2. El equipo funciona correctamente</td>
+                            <td><label class="radio-label"><input type="radio" name="n_vent_adm_a_func" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_vent_adm_a_func" value="NO"> NO</label></td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>3. Presencia de ruidos o anomalías</td>
+                            <td><label class="radio-label"><input type="radio" name="n_vent_adm_a_ruidos" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_vent_adm_a_ruidos" value="NO"> NO</label></td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="card">
+                <div class="section-header">VENTILADOR DE ADMISIÓN (711_CV002A)</div>
+                        <div class="equipment-status">
+                            <label>Estado:</label>
+                            <select class="status-select" onchange="toggleEquipment(this)">
+                                <option value="funcionando">Funcionando</option>
+                                <option value="parado">Parado</option>
+                                <option value="defecto">Defecto eléctrico</option>
+                                <option value="no_funciona">No funciona</option>
+                            </select>
+                        </div>
+                <table>
+                    <thead><tr><th>Punto de Inspección</th><th>Control</th><th>Observaciones / Dato</th></tr></thead>
+                    <tbody>
+                        <tr>
+                            <td>1. Estado del equipo en el SCADA (marcar lo que proceda)</td>
+                            <td><div class="scada-group"><label class="checkbox-label"><input type="checkbox" name="n_vent_adm_b_scada" value="R"> R</label><label class="checkbox-label"><input type="checkbox" name="n_vent_adm_b_scada" value="L"> L</label><label class="checkbox-label"><input type="checkbox" name="n_vent_adm_b_scada" value="M"> M</label><label class="checkbox-label"><input type="checkbox" name="n_vent_adm_b_scada" value="A"> A</label></div></td>
+                            <td><input type="number" id="n_vent_adm_b_horas" placeholder="Nº horas"></td>
+                        </tr>
+                        <tr>
+                            <td>2. El equipo funciona correctamente</td>
+                            <td><label class="radio-label"><input type="radio" name="n_vent_adm_b_func" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_vent_adm_b_func" value="NO"> NO</label></td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>3. Presencia de ruidos o anomalías</td>
+                            <td><label class="radio-label"><input type="radio" name="n_vent_adm_b_ruidos" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_vent_adm_b_ruidos" value="NO"> NO</label></td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="card">
+                <div class="section-header">VENTILADOR ZONA DECANTACIÓN PRIMARIA (311_CV001)</div>
+                        <div class="equipment-status">
+                            <label>Estado:</label>
+                            <select class="status-select" onchange="toggleEquipment(this)">
+                                <option value="funcionando">Funcionando</option>
+                                <option value="parado">Parado</option>
+                                <option value="defecto">Defecto eléctrico</option>
+                                <option value="no_funciona">No funciona</option>
+                            </select>
+                        </div>
+                <table>
+                    <thead><tr><th>Punto de Inspección</th><th>Control</th><th>Observaciones / Dato</th></tr></thead>
+                    <tbody>
+                        <tr>
+                            <td>1. Estado del equipo en el SCADA (marcar lo que proceda)</td>
+                            <td><div class="scada-group"><label class="checkbox-label"><input type="checkbox" name="n_vent_decant_scada" value="R"> R</label><label class="checkbox-label"><input type="checkbox" name="n_vent_decant_scada" value="L"> L</label><label class="checkbox-label"><input type="checkbox" name="n_vent_decant_scada" value="M"> M</label><label class="checkbox-label"><input type="checkbox" name="n_vent_decant_scada" value="A"> A</label></div></td>
+                            <td><input type="number" id="n_vent_decant_horas" placeholder="Nº horas"></td>
+                        </tr>
+                        <tr>
+                            <td>2. El equipo funciona correctamente</td>
+                            <td><label class="radio-label"><input type="radio" name="n_vent_decant_func" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_vent_decant_func" value="NO"> NO</label></td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>3. Presencia de ruidos o anomalías</td>
+                            <td><label class="radio-label"><input type="radio" name="n_vent_decant_ruidos" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_vent_decant_ruidos" value="NO"> NO</label></td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="card">
+                <div class="section-header">VENTILADOR ZONA PRETRATAMIENTO (721_CV001)</div>
+                        <div class="equipment-status">
+                            <label>Estado:</label>
+                            <select class="status-select" onchange="toggleEquipment(this)">
+                                <option value="funcionando">Funcionando</option>
+                                <option value="parado">Parado</option>
+                                <option value="defecto">Defecto eléctrico</option>
+                                <option value="no_funciona">No funciona</option>
+                            </select>
+                        </div>
+                <table>
+                    <thead><tr><th>Punto de Inspección</th><th>Control</th><th>Observaciones / Dato</th></tr></thead>
+                    <tbody>
+                        <tr>
+                            <td>1. Estado del equipo en el SCADA (marcar lo que proceda)</td>
+                            <td><div class="scada-group"><label class="checkbox-label"><input type="checkbox" name="n_vent_pre_scada" value="R"> R</label><label class="checkbox-label"><input type="checkbox" name="n_vent_pre_scada" value="L"> L</label><label class="checkbox-label"><input type="checkbox" name="n_vent_pre_scada" value="M"> M</label><label class="checkbox-label"><input type="checkbox" name="n_vent_pre_scada" value="A"> A</label></div></td>
+                            <td><input type="number" id="n_vent_pre_horas" placeholder="Nº horas"></td>
+                        </tr>
+                        <tr>
+                            <td>2. El equipo funciona correctamente</td>
+                            <td><label class="radio-label"><input type="radio" name="n_vent_pre_func" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_vent_pre_func" value="NO"> NO</label></td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>3. Presencia de ruidos o anomalías</td>
+                            <td><label class="radio-label"><input type="radio" name="n_vent_pre_ruidos" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_vent_pre_ruidos" value="NO"> NO</label></td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="card">
+                <div class="section-header">VENTILADORES ZONA POSTRATAMIENTO (731_CV001)</div>
+                        <div class="equipment-status">
+                            <label>Estado:</label>
+                            <select class="status-select" onchange="toggleEquipment(this)">
+                                <option value="funcionando">Funcionando</option>
+                                <option value="parado">Parado</option>
+                                <option value="defecto">Defecto eléctrico</option>
+                                <option value="no_funciona">No funciona</option>
+                            </select>
+                        </div>
+                <table>
+                    <thead><tr><th>Punto de Inspección</th><th>Control</th><th>Observaciones / Dato</th></tr></thead>
+                    <tbody>
+                        <tr>
+                            <td>1. Estado del equipo en el SCADA (marcar lo que proceda)</td>
+                            <td><div class="scada-group"><label class="checkbox-label"><input type="checkbox" name="n_vent_post_scada" value="R"> R</label><label class="checkbox-label"><input type="checkbox" name="n_vent_post_scada" value="L"> L</label><label class="checkbox-label"><input type="checkbox" name="n_vent_post_scada" value="M"> M</label><label class="checkbox-label"><input type="checkbox" name="n_vent_post_scada" value="A"> A</label></div></td>
+                            <td><input type="number" id="n_vent_post_horas" placeholder="Nº horas"></td>
+                        </tr>
+                        <tr>
+                            <td>2. El equipo funciona correctamente</td>
+                            <td><label class="radio-label"><input type="radio" name="n_vent_post_func" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_vent_post_func" value="NO"> NO</label></td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>3. Presencia de ruidos o anomalías</td>
+                            <td><label class="radio-label"><input type="radio" name="n_vent_post_ruidos" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_vent_post_ruidos" value="NO"> NO</label></td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="card">
+                <div class="section-header">VENTILADOR GALERÍA 3 CANTÓN (721_CV003)</div>
+                        <div class="equipment-status">
+                            <label>Estado:</label>
+                            <select class="status-select" onchange="toggleEquipment(this)">
+                                <option value="funcionando">Funcionando</option>
+                                <option value="parado">Parado</option>
+                                <option value="defecto">Defecto eléctrico</option>
+                                <option value="no_funciona">No funciona</option>
+                            </select>
+                        </div>
+                <table>
+                    <thead><tr><th>Punto de Inspección</th><th>Control</th><th>Observaciones / Dato</th></tr></thead>
+                    <tbody>
+                        <tr>
+                            <td>1. Estado del equipo en el SCADA (marcar lo que proceda)</td>
+                            <td><div class="scada-group"><label class="checkbox-label"><input type="checkbox" name="n_vent_galeria_scada" value="R"> R</label><label class="checkbox-label"><input type="checkbox" name="n_vent_galeria_scada" value="L"> L</label><label class="checkbox-label"><input type="checkbox" name="n_vent_galeria_scada" value="M"> M</label><label class="checkbox-label"><input type="checkbox" name="n_vent_galeria_scada" value="A"> A</label></div></td>
+                            <td><input type="number" id="n_vent_galeria_horas" placeholder="Nº horas"></td>
+                        </tr>
+                        <tr>
+                            <td>2. El equipo funciona correctamente</td>
+                            <td><label class="radio-label"><input type="radio" name="n_vent_galeria_func" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_vent_galeria_func" value="NO"> NO</label></td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>3. Presencia de ruidos o anomalías</td>
+                            <td><label class="radio-label"><input type="radio" name="n_vent_galeria_ruidos" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_vent_galeria_ruidos" value="NO"> NO</label></td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="card">
+                <div class="section-header">VENTILADORES GALERÍA BIOFILTRO (711_CV002)</div>
+                        <div class="equipment-status">
+                            <label>Estado:</label>
+                            <select class="status-select" onchange="toggleEquipment(this)">
+                                <option value="funcionando">Funcionando</option>
+                                <option value="parado">Parado</option>
+                                <option value="defecto">Defecto eléctrico</option>
+                                <option value="no_funciona">No funciona</option>
+                            </select>
+                        </div>
+                <table>
+                    <thead><tr><th>Punto de Inspección</th><th>Control</th><th>Observaciones / Dato</th></tr></thead>
+                    <tbody>
+                        <tr>
+                            <td>1. Estado del equipo en el SCADA (marcar lo que proceda)</td>
+                            <td><div class="scada-group"><label class="checkbox-label"><input type="checkbox" name="n_vent_bio_scada" value="R"> R</label><label class="checkbox-label"><input type="checkbox" name="n_vent_bio_scada" value="L"> L</label><label class="checkbox-label"><input type="checkbox" name="n_vent_bio_scada" value="M"> M</label><label class="checkbox-label"><input type="checkbox" name="n_vent_bio_scada" value="A"> A</label></div></td>
+                            <td><input type="number" id="n_vent_bio_horas" placeholder="Nº horas"></td>
+                        </tr>
+                        <tr>
+                            <td>2. El equipo funciona correctamente</td>
+                            <td><label class="radio-label"><input type="radio" name="n_vent_bio_func" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_vent_bio_func" value="NO"> NO</label></td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>3. Presencia de ruidos o anomalías</td>
+                            <td><label class="radio-label"><input type="radio" name="n_vent_bio_ruidos" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_vent_bio_ruidos" value="NO"> NO</label></td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="card">
+                <div class="section-header">VENTILADOR GALERÍA BIOLÓGICO (721_CV002)</div>
+                        <div class="equipment-status">
+                            <label>Estado:</label>
+                            <select class="status-select" onchange="toggleEquipment(this)">
+                                <option value="funcionando">Funcionando</option>
+                                <option value="parado">Parado</option>
+                                <option value="defecto">Defecto eléctrico</option>
+                                <option value="no_funciona">No funciona</option>
+                            </select>
+                        </div>
+                <table>
+                    <thead><tr><th>Punto de Inspección</th><th>Control</th><th>Observaciones / Dato</th></tr></thead>
+                    <tbody>
+                        <tr>
+                            <td>1. Estado del equipo en el SCADA (marcar lo que proceda)</td>
+                            <td><div class="scada-group"><label class="checkbox-label"><input type="checkbox" name="n_vent_biol_scada" value="R"> R</label><label class="checkbox-label"><input type="checkbox" name="n_vent_biol_scada" value="L"> L</label><label class="checkbox-label"><input type="checkbox" name="n_vent_biol_scada" value="M"> M</label><label class="checkbox-label"><input type="checkbox" name="n_vent_biol_scada" value="A"> A</label></div></td>
+                            <td><input type="number" id="n_vent_biol_horas" placeholder="Nº horas"></td>
+                        </tr>
+                        <tr>
+                            <td>2. El equipo funciona correctamente</td>
+                            <td><label class="radio-label"><input type="radio" name="n_vent_biol_func" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_vent_biol_func" value="NO"> NO</label></td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>3. Presencia de ruidos o anomalías</td>
+                            <td><label class="radio-label"><input type="radio" name="n_vent_biol_ruidos" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_vent_biol_ruidos" value="NO"> NO</label></td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="card">
+                <div class="section-header">SISTEMA DE DESODORIZACIÓN LÍNEA 1 </div>
+                        <div class="equipment-status">
+                            <label>Estado:</label>
+                            <select class="status-select" onchange="toggleEquipment(this)">
+                                <option value="funcionando">Funcionando</option>
+                                <option value="parado">Parado</option>
+                                <option value="defecto">Defecto eléctrico</option>
+                                <option value="no_funciona">No funciona</option>
+                            </select>
+                        </div>
+                <table>
+                    <thead><tr><th>Punto de Inspección</th><th>Control</th><th>Observaciones / Dato</th></tr></thead>
+                    <tbody>
+                        <tr>
+                            <td>1. El equipo funciona correctamente</td>
+                            <td><label class="radio-label"><input type="radio" name="n_desodor1_func" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_desodor1_func" value="NO"> NO</label></td>
+                            <td><input type="text" id="n_desodor1_func_valor" placeholder="Indicar valor"></td>
+                        </tr>
+                        <tr>
+                            <td>2. El ventilador está en marcha</td>
+                            <td><label class="radio-label"><input type="radio" name="n_desodor1_vent" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_desodor1_vent" value="NO"> NO</label></td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>3. Presencia de ruidos, fugas o anomalías</td>
+                            <td><label class="radio-label"><input type="radio" name="n_desodor1_ruidos" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_desodor1_ruidos" value="NO"> NO</label></td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>4. Caudal humidificación 1º contacto</td>
+                            <td><label class="radio-label"><input type="radio" name="n_desodor1_c1" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_desodor1_c1" value="NO"> NO</label></td>
+                            <td><input type="text" id="n_desodor1_c1_valor" placeholder="Indicar valor LPM"></td>
+                        </tr>
+                        <tr>
+                            <td>5. Caudal humidificación 2º contacto</td>
+                            <td><label class="radio-label"><input type="radio" name="n_desodor1_c2" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_desodor1_c2" value="NO"> NO</label></td>
+                            <td><input type="text" id="n_desodor1_c2_valor" placeholder="Indicar valor LPM"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="card">
+                <div class="section-header">SISTEMA DE DESODORIZACIÓN EN BPAR </div>
+                        <div class="equipment-status">
+                            <label>Estado:</label>
+                            <select class="status-select" onchange="toggleEquipment(this)">
+                                <option value="funcionando">Funcionando</option>
+                                <option value="parado">Parado</option>
+                                <option value="defecto">Defecto eléctrico</option>
+                                <option value="no_funciona">No funciona</option>
+                            </select>
+                        </div>
+                <table>
+                    <thead><tr><th>Punto de Inspección</th><th>Control</th><th>Observaciones / Dato</th></tr></thead>
+                    <tbody>
+                        <tr>
+                            <td>1. El equipo funciona correctamente</td>
+                            <td><label class="radio-label"><input type="radio" name="n_desodor2_func" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_desodor2_func" value="NO"> NO</label></td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>2. El ventilador está en marcha</td>
+                            <td><label class="radio-label"><input type="radio" name="n_desodor2_vent" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_desodor2_vent" value="NO"> NO</label></td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>3. Presencia de ruidos, fugas o anomalías</td>
+                            <td><label class="radio-label"><input type="radio" name="n_desodor2_ruidos" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_desodor2_ruidos" value="NO"> NO</label></td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>4. Caudal humidificación 1º contacto</td>
+                            <td><label class="radio-label"><input type="radio" name="n_desodor2_c1" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_desodor2_c1" value="NO"> NO</label></td>
+                            <td><input type="text" id="n_desodor2_c1_valor" placeholder="Indicar valor LPM"></td>
+                        </tr>
+                        <tr>
+                            <td>5. Caudal humidificación 2º contacto</td>
+                            <td><label class="radio-label"><input type="radio" name="n_desodor2_c2" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_desodor2_c2" value="NO"> NO</label></td>
+                            <td><input type="text" id="n_desodor2_c2_valor" placeholder="Indicar valor LPM"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="card">
+                <div class="section-header">MONTACARGAS M1 </div>
+                        <div class="equipment-status">
+                            <label>Estado:</label>
+                            <select class="status-select" onchange="toggleEquipment(this)">
+                                <option value="funcionando">Funcionando</option>
+                                <option value="parado">Parado</option>
+                                <option value="defecto">Defecto eléctrico</option>
+                                <option value="no_funciona">No funciona</option>
+                            </select>
+                        </div>
+                <table>
+                    <thead><tr><th>Punto de Inspección</th><th>Control</th><th>Observaciones / Dato</th></tr></thead>
+                    <tbody>
+                        <tr>
+                            <td>1. Inspección visual del equipo correcta</td>
+                            <td><label class="radio-label"><input type="radio" name="n_montacargas_inspec" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_montacargas_inspec" value="NO"> NO</label></td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>2. Estado correcto de pinzas, de resbalón y sistema de frenado</td>
+                            <td><label class="radio-label"><input type="radio" name="n_montacargas_pinzas" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_montacargas_pinzas" value="NO"> NO</label></td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>3. Cuadro eléctrico OK, sin anomalías</td>
+                            <td><label class="radio-label"><input type="radio" name="n_montacargas_cuadro" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_montacargas_cuadro" value="NO"> NO</label></td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div id="fangos" class="tab-content">
+            <div class="card">
+                <div class="section-header">DETECTOR DEL NIVEL DE FANGOS (344B_LT001)</div>
+                        <div class="equipment-status">
+                            <label>Estado:</label>
+                            <select class="status-select" onchange="toggleEquipment(this)">
+                                <option value="funcionando">Funcionando</option>
+                                <option value="parado">Parado</option>
+                                <option value="defecto">Defecto eléctrico</option>
+                                <option value="no_funciona">No funciona</option>
+                            </select>
+                        </div>
+                <table>
+                    <thead><tr><th>Punto de Inspección</th><th>Control</th><th>Observaciones / Dato</th></tr></thead>
+                    <tbody>
+                        <tr>
+                            <td>1. El detector de nivel funciona correctamente</td>
+                            <td><label class="radio-label"><input type="radio" name="n_detector_fangos" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_detector_fangos" value="NO"> NO</label></td>
+                            <td><input type="text" id="n_detector_fangos_valor" placeholder="Indicar valor %"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="card">
+                <div class="section-header">SISTEMA DE EXTRACCIÓN DE FLOTANTES (344B_PU001)</div>
+                        <div class="equipment-status">
+                            <label>Estado:</label>
+                            <select class="status-select" onchange="toggleEquipment(this)">
+                                <option value="funcionando">Funcionando</option>
+                                <option value="parado">Parado</option>
+                                <option value="defecto">Defecto eléctrico</option>
+                                <option value="no_funciona">No funciona</option>
+                            </select>
+                        </div>
+                <table>
+                    <thead><tr><th>Punto de Inspección</th><th>Control</th><th>Observaciones / Dato</th></tr></thead>
+                    <tbody>
+                        <tr>
+                            <td>1. Estado del equipo en el SCADA (marcar lo que proceda)</td>
+                            <td><div class="scada-group"><label class="checkbox-label"><input type="checkbox" name="n_extrac_flot_scada" value="R"> R</label><label class="checkbox-label"><input type="checkbox" name="n_extrac_flot_scada" value="L"> L</label><label class="checkbox-label"><input type="checkbox" name="n_extrac_flot_scada" value="M"> M</label><label class="checkbox-label"><input type="checkbox" name="n_extrac_flot_scada" value="A"> A</label></div></td>
+                            <td><input type="number" id="n_extrac_flot_horas" placeholder="Nº horas"></td>
+                        </tr>
+                        <tr>
+                            <td>2. El equipo funciona correctamente. Extrae flotantes</td>
+                            <td><label class="radio-label"><input type="radio" name="n_extrac_flot_func" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_extrac_flot_func" value="NO"> NO</label></td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>3. Presencia de ruidos o anomalías</td>
+                            <td><label class="radio-label"><input type="radio" name="n_extrac_flot_ruidos" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_extrac_flot_ruidos" value="NO"> NO</label></td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="card">
+                <div class="section-header">VÁLVULA PIC PURGA FANGOS (344A_V_0041)</div>
+                        <div class="equipment-status">
+                            <label>Estado:</label>
+                            <select class="status-select" onchange="toggleEquipment(this)">
+                                <option value="funcionando">Funcionando</option>
+                                <option value="parado">Parado</option>
+                                <option value="defecto">Defecto eléctrico</option>
+                                <option value="no_funciona">No funciona</option>
+                            </select>
+                        </div>
+                <table>
+                    <thead><tr><th>Punto de Inspección</th><th>Control</th><th>Observaciones / Dato</th></tr></thead>
+                    <tbody>
+                        <tr>
+                            <td>1. Estado del equipo en el SCADA (marcar lo que proceda)</td>
+                            <td><div class="scada-group"><label class="checkbox-label"><input type="checkbox" name="n_valv_344a_v_0041_scada" value="R"> R</label><label class="checkbox-label"><input type="checkbox" name="n_valv_344a_v_0041_scada" value="L"> L</label><label class="checkbox-label"><input type="checkbox" name="n_valv_344a_v_0041_scada" value="M"> M</label><label class="checkbox-label"><input type="checkbox" name="n_valv_344a_v_0041_scada" value="A"> A</label></div></td>
+                            <td><input type="number" id="n_valv_344a_v_0041_horas" placeholder="Nº horas"></td>
+                        </tr>
+                        <tr>
+                            <td>2. El equipo funciona correctamente</td>
+                            <td><label class="radio-label"><input type="radio" name="n_valv_344a_v_0041_func" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_valv_344a_v_0041_func" value="NO"> NO</label></td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>3. Se aprecian fugas de fangos</td>
+                            <td><label class="radio-label"><input type="radio" name="n_valv_344a_v_0041_fugas" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_valv_344a_v_0041_fugas" value="NO"> NO</label></td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="card">
+                <div class="section-header">VÁLVULA PIC PURGA FANGOS (344A_V_0042)</div>
+                        <div class="equipment-status">
+                            <label>Estado:</label>
+                            <select class="status-select" onchange="toggleEquipment(this)">
+                                <option value="funcionando">Funcionando</option>
+                                <option value="parado">Parado</option>
+                                <option value="defecto">Defecto eléctrico</option>
+                                <option value="no_funciona">No funciona</option>
+                            </select>
+                        </div>
+                <table>
+                    <thead><tr><th>Punto de Inspección</th><th>Control</th><th>Observaciones / Dato</th></tr></thead>
+                    <tbody>
+                        <tr>
+                            <td>1. Estado del equipo en el SCADA (marcar lo que proceda)</td>
+                            <td><div class="scada-group"><label class="checkbox-label"><input type="checkbox" name="n_valv_344a_v_0042_scada" value="R"> R</label><label class="checkbox-label"><input type="checkbox" name="n_valv_344a_v_0042_scada" value="L"> L</label><label class="checkbox-label"><input type="checkbox" name="n_valv_344a_v_0042_scada" value="M"> M</label><label class="checkbox-label"><input type="checkbox" name="n_valv_344a_v_0042_scada" value="A"> A</label></div></td>
+                            <td><input type="number" id="n_valv_344a_v_0042_horas" placeholder="Nº horas"></td>
+                        </tr>
+                        <tr>
+                            <td>2. El equipo funciona correctamente</td>
+                            <td><label class="radio-label"><input type="radio" name="n_valv_344a_v_0042_func" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_valv_344a_v_0042_func" value="NO"> NO</label></td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>3. Se aprecian fugas de fangos</td>
+                            <td><label class="radio-label"><input type="radio" name="n_valv_344a_v_0042_fugas" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_valv_344a_v_0042_fugas" value="NO"> NO</label></td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="card">
+                <div class="section-header">VÁLVULA PIC PURGA FANGOS (344A_V_0043)</div>
+                        <div class="equipment-status">
+                            <label>Estado:</label>
+                            <select class="status-select" onchange="toggleEquipment(this)">
+                                <option value="funcionando">Funcionando</option>
+                                <option value="parado">Parado</option>
+                                <option value="defecto">Defecto eléctrico</option>
+                                <option value="no_funciona">No funciona</option>
+                            </select>
+                        </div>
+                <table>
+                    <thead><tr><th>Punto de Inspección</th><th>Control</th><th>Observaciones / Dato</th></tr></thead>
+                    <tbody>
+                        <tr>
+                            <td>1. Estado del equipo en el SCADA (marcar lo que proceda)</td>
+                            <td><div class="scada-group"><label class="checkbox-label"><input type="checkbox" name="n_valv_344a_v_0043_scada" value="R"> R</label><label class="checkbox-label"><input type="checkbox" name="n_valv_344a_v_0043_scada" value="L"> L</label><label class="checkbox-label"><input type="checkbox" name="n_valv_344a_v_0043_scada" value="M"> M</label><label class="checkbox-label"><input type="checkbox" name="n_valv_344a_v_0043_scada" value="A"> A</label></div></td>
+                            <td><input type="number" id="n_valv_344a_v_0043_horas" placeholder="Nº horas"></td>
+                        </tr>
+                        <tr>
+                            <td>2. El equipo funciona correctamente</td>
+                            <td><label class="radio-label"><input type="radio" name="n_valv_344a_v_0043_func" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_valv_344a_v_0043_func" value="NO"> NO</label></td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>3. Se aprecian fugas de fangos</td>
+                            <td><label class="radio-label"><input type="radio" name="n_valv_344a_v_0043_fugas" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_valv_344a_v_0043_fugas" value="NO"> NO</label></td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="card">
+                <div class="section-header">VÁLVULA PIC PURGA FANGOS (344A_V_0044)</div>
+                        <div class="equipment-status">
+                            <label>Estado:</label>
+                            <select class="status-select" onchange="toggleEquipment(this)">
+                                <option value="funcionando">Funcionando</option>
+                                <option value="parado">Parado</option>
+                                <option value="defecto">Defecto eléctrico</option>
+                                <option value="no_funciona">No funciona</option>
+                            </select>
+                        </div>
+                <table>
+                    <thead><tr><th>Punto de Inspección</th><th>Control</th><th>Observaciones / Dato</th></tr></thead>
+                    <tbody>
+                        <tr>
+                            <td>1. Estado del equipo en el SCADA (marcar lo que proceda)</td>
+                            <td><div class="scada-group"><label class="checkbox-label"><input type="checkbox" name="n_valv_344a_v_0044_scada" value="R"> R</label><label class="checkbox-label"><input type="checkbox" name="n_valv_344a_v_0044_scada" value="L"> L</label><label class="checkbox-label"><input type="checkbox" name="n_valv_344a_v_0044_scada" value="M"> M</label><label class="checkbox-label"><input type="checkbox" name="n_valv_344a_v_0044_scada" value="A"> A</label></div></td>
+                            <td><input type="number" id="n_valv_344a_v_0044_horas" placeholder="Nº horas"></td>
+                        </tr>
+                        <tr>
+                            <td>2. El equipo funciona correctamente</td>
+                            <td><label class="radio-label"><input type="radio" name="n_valv_344a_v_0044_func" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_valv_344a_v_0044_func" value="NO"> NO</label></td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>3. Se aprecian fugas de fangos</td>
+                            <td><label class="radio-label"><input type="radio" name="n_valv_344a_v_0044_fugas" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_valv_344a_v_0044_fugas" value="NO"> NO</label></td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="card">
+                <div class="section-header">VÁLVULA PIC PURGA LAMINAS (344A_V_0048)</div>
+                        <div class="equipment-status">
+                            <label>Estado:</label>
+                            <select class="status-select" onchange="toggleEquipment(this)">
+                                <option value="funcionando">Funcionando</option>
+                                <option value="parado">Parado</option>
+                                <option value="defecto">Defecto eléctrico</option>
+                                <option value="no_funciona">No funciona</option>
+                            </select>
+                        </div>
+                <table>
+                    <thead><tr><th>Punto de Inspección</th><th>Control</th><th>Observaciones / Dato</th></tr></thead>
+                    <tbody>
+                        <tr>
+                            <td>1. Estado del equipo en el SCADA (marcar lo que proceda)</td>
+                            <td><div class="scada-group"><label class="checkbox-label"><input type="checkbox" name="n_valv_344a_v_0048_scada" value="R"> R</label><label class="checkbox-label"><input type="checkbox" name="n_valv_344a_v_0048_scada" value="L"> L</label><label class="checkbox-label"><input type="checkbox" name="n_valv_344a_v_0048_scada" value="M"> M</label><label class="checkbox-label"><input type="checkbox" name="n_valv_344a_v_0048_scada" value="A"> A</label></div></td>
+                            <td><input type="number" id="n_valv_344a_v_0048_horas" placeholder="Nº horas"></td>
+                        </tr>
+                        <tr>
+                            <td>2. El equipo funciona correctamente</td>
+                            <td><label class="radio-label"><input type="radio" name="n_valv_344a_v_0048_func" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_valv_344a_v_0048_func" value="NO"> NO</label></td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>3. Se aprecian fugas de fangos</td>
+                            <td><label class="radio-label"><input type="radio" name="n_valv_344a_v_0048_fugas" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_valv_344a_v_0048_fugas" value="NO"> NO</label></td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="card">
+                <div class="section-header">BOMBA DE FLOTANTES (344A_PO002)</div>
+                        <div class="equipment-status">
+                            <label>Estado:</label>
+                            <select class="status-select" onchange="toggleEquipment(this)">
+                                <option value="funcionando">Funcionando</option>
+                                <option value="parado">Parado</option>
+                                <option value="defecto">Defecto eléctrico</option>
+                                <option value="no_funciona">No funciona</option>
+                            </select>
+                        </div>
+                <table>
+                    <thead><tr><th>Punto de Inspección</th><th>Control</th><th>Observaciones / Dato</th></tr></thead>
+                    <tbody>
+                        <tr>
+                            <td>1. Estado de las bombas en el SCADA (marcar lo que proceda)</td>
+                            <td><div class="scada-group"><label class="checkbox-label"><input type="checkbox" name="n_bomba_flot_scada" value="R"> R</label><label class="checkbox-label"><input type="checkbox" name="n_bomba_flot_scada" value="L"> L</label><label class="checkbox-label"><input type="checkbox" name="n_bomba_flot_scada" value="M"> M</label><label class="checkbox-label"><input type="checkbox" name="n_bomba_flot_scada" value="A"> A</label></div></td>
+                            <td><input type="number" id="n_bomba_flot_horas" placeholder="Nº horas"></td>
+                        </tr>
+                        <tr>
+                            <td>2. Las bombas funcionan correctamente</td>
+                            <td><label class="radio-label"><input type="radio" name="n_bomba_flot_func" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_bomba_flot_func" value="NO"> NO</label></td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>3. Presencia de ruidos, fugas o anomalías</td>
+                            <td><label class="radio-label"><input type="radio" name="n_bomba_flot_ruidos" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_bomba_flot_ruidos" value="NO"> NO</label></td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>4. La bomba se encuentra trabada</td>
+                            <td><label class="radio-label"><input type="radio" name="n_bomba_flot_trab" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_bomba_flot_trab" value="NO"> NO</label></td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>5. Las boyas se encuentran limpias</td>
+                            <td><label class="radio-label"><input type="radio" name="n_bomba_flot_boyas" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_bomba_flot_boyas" value="NO"> NO</label></td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>6. Correcto nivel de agua en la arqueta</td>
+                            <td><label class="radio-label"><input type="radio" name="n_bomba_flot_nivel" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_bomba_flot_nivel" value="NO"> NO</label></td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+<div class="section-header" style="background:#fef9c3; color:#854d0e; padding:8px; border-radius:6px; margin:16px 0 8px; font-weight:700;">IMPULSIÓN DE FANGOS</div>
+            <div class="card">
+                <div class="section-header">BOMBEO DE FANGOS A LA ARQUETA (344A_PO001)</div>
+                        <div class="equipment-status">
+                            <label>Estado:</label>
+                            <select class="status-select" onchange="toggleEquipment(this)">
+                                <option value="funcionando">Funcionando</option>
+                                <option value="parado">Parado</option>
+                                <option value="defecto">Defecto eléctrico</option>
+                                <option value="no_funciona">No funciona</option>
+                            </select>
+                        </div>
+                <table>
+                    <thead><tr><th>Punto de Inspección</th><th>Control</th><th>Observaciones / Dato</th></tr></thead>
+                    <tbody>
+                        <tr>
+                            <td>1. Estado de las bombas en el SCADA (marcar lo que proceda)</td>
+                            <td><div class="scada-group"><label class="checkbox-label"><input type="checkbox" name="n_impuls_a_scada" value="R"> R</label><label class="checkbox-label"><input type="checkbox" name="n_impuls_a_scada" value="L"> L</label><label class="checkbox-label"><input type="checkbox" name="n_impuls_a_scada" value="M"> M</label><label class="checkbox-label"><input type="checkbox" name="n_impuls_a_scada" value="A"> A</label></div></td>
+                            <td><input type="number" id="n_impuls_a_horas" placeholder="Nº horas"></td>
+                        </tr>
+                        <tr>
+                            <td>2. Las bombas funcionan correctamente</td>
+                            <td><label class="radio-label"><input type="radio" name="n_impuls_a_func" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_impuls_a_func" value="NO"> NO</label></td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>3. Presencia de ruidos, fugas o anomalías</td>
+                            <td><label class="radio-label"><input type="radio" name="n_impuls_a_ruidos" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_impuls_a_ruidos" value="NO"> NO</label></td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>4. Control de la presión durante el bombeo de fangos</td>
+                            <td><label class="radio-label"><input type="radio" name="n_impuls_a_pres" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_impuls_a_pres" value="NO"> NO</label></td>
+                            <td><input type="text" id="n_impuls_a_pres_valor" placeholder="Indicar valor Bar"></td>
+                        </tr>
+                        <tr>
+                            <td>5. Control de la caudal durante el bombeo de fangos</td>
+                            <td><label class="radio-label"><input type="radio" name="n_impuls_a_caudal" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_impuls_a_caudal" value="NO"> NO</label></td>
+                            <td><input type="text" id="n_impuls_a_caudal_valor" placeholder="Indicar valor Q"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="card">
+                <div class="section-header">BOMBEO DE FANGO A LA RED DE FANGOS (344B_PO001)</div>
+                        <div class="equipment-status">
+                            <label>Estado:</label>
+                            <select class="status-select" onchange="toggleEquipment(this)">
+                                <option value="funcionando">Funcionando</option>
+                                <option value="parado">Parado</option>
+                                <option value="defecto">Defecto eléctrico</option>
+                                <option value="no_funciona">No funciona</option>
+                            </select>
+                        </div>
+                <table>
+                    <thead><tr><th>Punto de Inspección</th><th>Control</th><th>Observaciones / Dato</th></tr></thead>
+                    <tbody>
+                        <tr>
+                            <td>1. Estado de las bombas en el SCADA (marcar lo que proceda)</td>
+                            <td><div class="scada-group"><label class="checkbox-label"><input type="checkbox" name="n_impuls_b_scada" value="R"> R</label><label class="checkbox-label"><input type="checkbox" name="n_impuls_b_scada" value="L"> L</label><label class="checkbox-label"><input type="checkbox" name="n_impuls_b_scada" value="M"> M</label><label class="checkbox-label"><input type="checkbox" name="n_impuls_b_scada" value="A"> A</label></div></td>
+                            <td><input type="number" id="n_impuls_b_horas" placeholder="Nº horas"></td>
+                        </tr>
+                        <tr>
+                            <td>2. Las bombas funcionan correctamente</td>
+                            <td><label class="radio-label"><input type="radio" name="n_impuls_b_func" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_impuls_b_func" value="NO"> NO</label></td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>3. Presencia de ruidos, fugas o anomalías</td>
+                            <td><label class="radio-label"><input type="radio" name="n_impuls_b_ruidos" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_impuls_b_ruidos" value="NO"> NO</label></td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>4. Control de la presión durante el bombeo de fangos</td>
+                            <td><label class="radio-label"><input type="radio" name="n_impuls_b_pres" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_impuls_b_pres" value="NO"> NO</label></td>
+                            <td><input type="text" id="n_impuls_b_pres_valor" placeholder="Indicar valor Bar"></td>
+                        </tr>
+                        <tr>
+                            <td>5. Control de la caudal durante el bombeo de fangos</td>
+                            <td><label class="radio-label"><input type="radio" name="n_impuls_b_caudal" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_impuls_b_caudal" value="NO"> NO</label></td>
+                            <td><input type="text" id="n_impuls_b_caudal_valor" placeholder="Indicar valor Q"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="card">
+                <div class="section-header">BOMBEO DE FANGO A LA DESHIDRATACIÓN (344C_PO001)</div>
+                        <div class="equipment-status">
+                            <label>Estado:</label>
+                            <select class="status-select" onchange="toggleEquipment(this)">
+                                <option value="funcionando">Funcionando</option>
+                                <option value="parado">Parado</option>
+                                <option value="defecto">Defecto eléctrico</option>
+                                <option value="no_funciona">No funciona</option>
+                            </select>
+                        </div>
+                <table>
+                    <thead><tr><th>Punto de Inspección</th><th>Control</th><th>Observaciones / Dato</th></tr></thead>
+                    <tbody>
+                        <tr>
+                            <td>1. Estado de las bombas en el SCADA (marcar lo que proceda)</td>
+                            <td><div class="scada-group"><label class="checkbox-label"><input type="checkbox" name="n_impuls_c_scada" value="R"> R</label><label class="checkbox-label"><input type="checkbox" name="n_impuls_c_scada" value="L"> L</label><label class="checkbox-label"><input type="checkbox" name="n_impuls_c_scada" value="M"> M</label><label class="checkbox-label"><input type="checkbox" name="n_impuls_c_scada" value="A"> A</label></div></td>
+                            <td><input type="number" id="n_impuls_c_horas" placeholder="Nº horas"></td>
+                        </tr>
+                        <tr>
+                            <td>2. Las bombas funcionan correctamente</td>
+                            <td><label class="radio-label"><input type="radio" name="n_impuls_c_func" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_impuls_c_func" value="NO"> NO</label></td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>3. Presencia de ruidos, fugas o anomalías</td>
+                            <td><label class="radio-label"><input type="radio" name="n_impuls_c_ruidos" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_impuls_c_ruidos" value="NO"> NO</label></td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>4. Control de la presión durante el bombeo de fangos</td>
+                            <td><label class="radio-label"><input type="radio" name="n_impuls_c_pres" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_impuls_c_pres" value="NO"> NO</label></td>
+                            <td><input type="text" id="n_impuls_c_pres_valor" placeholder="Indicar valor Bar"></td>
+                        </tr>
+                        <tr>
+                            <td>5. Control de la caudal durante el bombeo de fangos</td>
+                            <td><label class="radio-label"><input type="radio" name="n_impuls_c_caudal" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_impuls_c_caudal" value="NO"> NO</label></td>
+                            <td><input type="text" id="n_impuls_c_caudal_valor" placeholder="Indicar valor Q"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="card">
+                <div class="section-header">VÁLVULAS MOTORIZADAS DE COMPUERTA (444A_VM001)</div>
+                        <div class="equipment-status">
+                            <label>Estado:</label>
+                            <select class="status-select" onchange="toggleEquipment(this)">
+                                <option value="funcionando">Funcionando</option>
+                                <option value="parado">Parado</option>
+                                <option value="defecto">Defecto eléctrico</option>
+                                <option value="no_funciona">No funciona</option>
+                            </select>
+                        </div>
+                <table>
+                    <thead><tr><th>Punto de Inspección</th><th>Control</th><th>Observaciones / Dato</th></tr></thead>
+                    <tbody>
+                        <tr>
+                            <td>1. Estado de las válvulas en el SCADA (marcar lo que proceda)</td>
+                            <td><div class="scada-group"><label class="checkbox-label"><input type="checkbox" name="n_valvM_444a_vm001_scada" value="R"> R</label><label class="checkbox-label"><input type="checkbox" name="n_valvM_444a_vm001_scada" value="L"> L</label><label class="checkbox-label"><input type="checkbox" name="n_valvM_444a_vm001_scada" value="M"> M</label><label class="checkbox-label"><input type="checkbox" name="n_valvM_444a_vm001_scada" value="A"> A</label></div></td>
+                            <td><input type="number" id="n_valvM_444a_vm001_horas" placeholder="Nº horas"></td>
+                        </tr>
+                        <tr>
+                            <td>2. Indicar posición</td>
+                            <td><label class="radio-label"><input type="radio" name="n_valvM_444a_vm001_pos" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_valvM_444a_vm001_pos" value="NO"> NO</label></td>
+                            <td><input type="text" id="n_valvM_444a_vm001_pos_valor" placeholder="A/C"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="card">
+                <div class="section-header">VÁLVULAS MOTORIZADAS DE COMPUERTA (444A_VM002)</div>
+                        <div class="equipment-status">
+                            <label>Estado:</label>
+                            <select class="status-select" onchange="toggleEquipment(this)">
+                                <option value="funcionando">Funcionando</option>
+                                <option value="parado">Parado</option>
+                                <option value="defecto">Defecto eléctrico</option>
+                                <option value="no_funciona">No funciona</option>
+                            </select>
+                        </div>
+                <table>
+                    <thead><tr><th>Punto de Inspección</th><th>Control</th><th>Observaciones / Dato</th></tr></thead>
+                    <tbody>
+                        <tr>
+                            <td>1. Estado de las válvulas en el SCADA (marcar lo que proceda)</td>
+                            <td><div class="scada-group"><label class="checkbox-label"><input type="checkbox" name="n_valvM_444a_vm002_scada" value="R"> R</label><label class="checkbox-label"><input type="checkbox" name="n_valvM_444a_vm002_scada" value="L"> L</label><label class="checkbox-label"><input type="checkbox" name="n_valvM_444a_vm002_scada" value="M"> M</label><label class="checkbox-label"><input type="checkbox" name="n_valvM_444a_vm002_scada" value="A"> A</label></div></td>
+                            <td><input type="number" id="n_valvM_444a_vm002_horas" placeholder="Nº horas"></td>
+                        </tr>
+                        <tr>
+                            <td>2. Indicar posición</td>
+                            <td><label class="radio-label"><input type="radio" name="n_valvM_444a_vm002_pos" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_valvM_444a_vm002_pos" value="NO"> NO</label></td>
+                            <td><input type="text" id="n_valvM_444a_vm002_pos_valor" placeholder="A/C"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="card">
+                <div class="section-header">VÁLVULAS MOTORIZADAS DE COMPUERTA (444A_VM003)</div>
+                        <div class="equipment-status">
+                            <label>Estado:</label>
+                            <select class="status-select" onchange="toggleEquipment(this)">
+                                <option value="funcionando">Funcionando</option>
+                                <option value="parado">Parado</option>
+                                <option value="defecto">Defecto eléctrico</option>
+                                <option value="no_funciona">No funciona</option>
+                            </select>
+                        </div>
+                <table>
+                    <thead><tr><th>Punto de Inspección</th><th>Control</th><th>Observaciones / Dato</th></tr></thead>
+                    <tbody>
+                        <tr>
+                            <td>1. Estado de las válvulas en el SCADA (marcar lo que proceda)</td>
+                            <td><div class="scada-group"><label class="checkbox-label"><input type="checkbox" name="n_valvM_444a_vm003_scada" value="R"> R</label><label class="checkbox-label"><input type="checkbox" name="n_valvM_444a_vm003_scada" value="L"> L</label><label class="checkbox-label"><input type="checkbox" name="n_valvM_444a_vm003_scada" value="M"> M</label><label class="checkbox-label"><input type="checkbox" name="n_valvM_444a_vm003_scada" value="A"> A</label></div></td>
+                            <td><input type="number" id="n_valvM_444a_vm003_horas" placeholder="Nº horas"></td>
+                        </tr>
+                        <tr>
+                            <td>2. Indicar posición</td>
+                            <td><label class="radio-label"><input type="radio" name="n_valvM_444a_vm003_pos" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_valvM_444a_vm003_pos" value="NO"> NO</label></td>
+                            <td><input type="text" id="n_valvM_444a_vm003_pos_valor" placeholder="A/C"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="card">
+                <div class="section-header">VÁLVULAS MOTORIZADAS DE COMPUERTA (444A_VM004)</div>
+                        <div class="equipment-status">
+                            <label>Estado:</label>
+                            <select class="status-select" onchange="toggleEquipment(this)">
+                                <option value="funcionando">Funcionando</option>
+                                <option value="parado">Parado</option>
+                                <option value="defecto">Defecto eléctrico</option>
+                                <option value="no_funciona">No funciona</option>
+                            </select>
+                        </div>
+                <table>
+                    <thead><tr><th>Punto de Inspección</th><th>Control</th><th>Observaciones / Dato</th></tr></thead>
+                    <tbody>
+                        <tr>
+                            <td>1. Estado de las válvulas en el SCADA (marcar lo que proceda)</td>
+                            <td><div class="scada-group"><label class="checkbox-label"><input type="checkbox" name="n_valvM_444a_vm004_scada" value="R"> R</label><label class="checkbox-label"><input type="checkbox" name="n_valvM_444a_vm004_scada" value="L"> L</label><label class="checkbox-label"><input type="checkbox" name="n_valvM_444a_vm004_scada" value="M"> M</label><label class="checkbox-label"><input type="checkbox" name="n_valvM_444a_vm004_scada" value="A"> A</label></div></td>
+                            <td><input type="number" id="n_valvM_444a_vm004_horas" placeholder="Nº horas"></td>
+                        </tr>
+                        <tr>
+                            <td>2. Indicar posición</td>
+                            <td><label class="radio-label"><input type="radio" name="n_valvM_444a_vm004_pos" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_valvM_444a_vm004_pos" value="NO"> NO</label></td>
+                            <td><input type="text" id="n_valvM_444a_vm004_pos_valor" placeholder="A/C"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="card">
+                <div class="section-header">TAMIZ DE SALIDA </div>
+                        <div class="equipment-status">
+                            <label>Estado:</label>
+                            <select class="status-select" onchange="toggleEquipment(this)">
+                                <option value="funcionando">Funcionando</option>
+                                <option value="parado">Parado</option>
+                                <option value="defecto">Defecto eléctrico</option>
+                                <option value="no_funciona">No funciona</option>
+                            </select>
+                        </div>
+                <table>
+                    <thead><tr><th>Punto de Inspección</th><th>Control</th><th>Observaciones / Dato</th></tr></thead>
+                    <tbody>
+                        <tr>
+                            <td>1. El equipo recoge muestras correctamente</td>
+                            <td><label class="radio-label"><input type="radio" name="n_tamiz_salida_func" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_tamiz_salida_func" value="NO"> NO</label></td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>2. Presencia de errores en pantalla</td>
+                            <td><label class="radio-label"><input type="radio" name="n_tamiz_salida_errores" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_tamiz_salida_errores" value="NO"> NO</label></td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>3. Nivel de bolsas correcto</td>
+                            <td><label class="radio-label"><input type="radio" name="n_tamiz_salida_nivel" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_tamiz_salida_nivel" value="NO"> NO</label></td>
+                            <td><input type="text" id="n_tamiz_salida_nivel_valor" placeholder="Anotar nº de bolsas en proceso de llenado"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="card">
+                <div class="section-header">TORNILLO SINFIN SALIDA </div>
+                        <div class="equipment-status">
+                            <label>Estado:</label>
+                            <select class="status-select" onchange="toggleEquipment(this)">
+                                <option value="funcionando">Funcionando</option>
+                                <option value="parado">Parado</option>
+                                <option value="defecto">Defecto eléctrico</option>
+                                <option value="no_funciona">No funciona</option>
+                            </select>
+                        </div>
+                <table>
+                    <thead><tr><th>Punto de Inspección</th><th>Control</th><th>Observaciones / Dato</th></tr></thead>
+                    <tbody>
+                        <tr>
+                            <td>1. El equipo recoge residuos correctamente</td>
+                            <td><label class="radio-label"><input type="radio" name="n_tornillo_salida_func" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_tornillo_salida_func" value="NO"> NO</label></td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>2. Presencia de errores en pantalla</td>
+                            <td><label class="radio-label"><input type="radio" name="n_tornillo_salida_errores" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_tornillo_salida_errores" value="NO"> NO</label></td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>3. Nivel de bolsas correcto</td>
+                            <td><label class="radio-label"><input type="radio" name="n_tornillo_salida_nivel" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_tornillo_salida_nivel" value="NO"> NO</label></td>
+                            <td><input type="text" id="n_tornillo_salida_nivel_valor" placeholder="Anotar nº de bolsas"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="card">
+                <div class="section-header">TORNILLO SINFIN ENTRADA (BIOFILTRO) </div>
+                        <div class="equipment-status">
+                            <label>Estado:</label>
+                            <select class="status-select" onchange="toggleEquipment(this)">
+                                <option value="funcionando">Funcionando</option>
+                                <option value="parado">Parado</option>
+                                <option value="defecto">Defecto eléctrico</option>
+                                <option value="no_funciona">No funciona</option>
+                            </select>
+                        </div>
+                <table>
+                    <thead><tr><th>Punto de Inspección</th><th>Control</th><th>Observaciones / Dato</th></tr></thead>
+                    <tbody>
+                        <tr>
+                            <td>1. El equipo recoge muestras correctamente</td>
+                            <td><label class="radio-label"><input type="radio" name="n_tornillo_bio_func" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_tornillo_bio_func" value="NO"> NO</label></td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>2. Presencia de errores en pantalla</td>
+                            <td><label class="radio-label"><input type="radio" name="n_tornillo_bio_errores" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_tornillo_bio_errores" value="NO"> NO</label></td>
+                            <td><input type="text" class="obs-input" placeholder="Obs."></td>
+                        </tr>
+                        <tr>
+                            <td>3. Nivel de bolsas correcto</td>
+                            <td><label class="radio-label"><input type="radio" name="n_tornillo_bio_nivel" value="SI"> SI</label><label class="radio-label"><input type="radio" name="n_tornillo_bio_nivel" value="NO"> NO</label></td>
+                            <td><input type="text" id="n_tornillo_bio_nivel_valor" placeholder="Anotar nº de bolsas"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div id="observaciones" class="tab-content">
+            <div class="card">
+                <div class="section-header">OBSERVACIONES GENERALES DEL TURNO</div>
+                <div class="form-group"><textarea id="observaciones_generales" rows="6" placeholder="Escriba aquí incidencias, anomalías detectadas, mantenimientos realizados..."></textarea></div>
+                <p style="font-size:0.85rem; color:var(--warning); font-weight:600;">Nota: Al finalizar el turno dejar constancia de cualquier incidencia.</p>
+            </div>
+        </div>
+        <div id="resumenTab" class="tab-content">
+            <div class="card" id="loginGate" style="display:none;">
+                <div class="card-title">Acceso Restringido - Administrador</div>
+                <p style="font-size:0.9rem; margin-bottom:15px;">Introduzca credenciales para acceder a los registros.</p>
+                <div class="grid-2">
+                    <div class="form-group"><label>Usuario</label><input type="text" id="adminUser" placeholder="Usuario"></div>
+                    <div class="form-group"><label>Contraseña</label><input type="password" id="adminPass" placeholder="Contraseña"></div>
+                </div>
+                <div style="margin-top:12px;"><button type="button" class="btn btn-primary" onclick="adminLogin()">Entrar</button><span id="loginError" style="color:var(--danger); font-size:0.85rem; margin-left:10px; display:none;">Credenciales incorrectas.</span></div>
+            </div>
+            <div class="card" id="recordsPanel" style="display:none;">
+                <div class="card-title">Registros Almacenados <button type="button" class="btn btn-secondary" style="padding:4px 10px; font-size:0.8rem;" onclick="adminLogout()">Cerrar sesión</button></div>
+                <div id="savedRecordsTable"></div>
+            </div>
+        </div>
+        <div id="reviewModal" class="modal">
+            <div class="modal-content">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+                    <h3 style="color:var(--primary);">Revisión antes de guardar</h3>
+                    <button type="button" class="btn btn-secondary" style="padding:4px 10px;" onclick="closeReviewModal()">Cerrar</button>
+                </div>
+                <div id="reviewContent"></div>
+                <div id="reviewWarnings" style="margin-top:12px;"></div>
+                <div style="margin-top:16px; text-align:right; display:flex; gap:10px; justify-content:flex-end;">
+                    <button type="button" class="btn btn-secondary" onclick="closeReviewModal()">Cancelar</button>
+                    <button type="button" class="btn btn-success" onclick="confirmSave()">Confirmar Guardado</button>
+                </div>
+            </div>
+        </div>
+        <div class="actions-bar">
+            <div style="flex:1; display:flex; align-items:center; gap:12px;">
+                <span id="backupStatus" style="font-size:0.75rem; color:var(--text-muted);"></span>
+                <span id="emptyDataMsg" style="display:none; font-size:0.8rem; color:var(--danger); font-weight:600;">No hay datos. <label for="backupFileInput" style="text-decoration:underline; cursor:pointer; color:var(--primary);">Importar backup</label><input type="file" id="backupFileInput" accept=".json" style="display:none;" onchange="importBackupFile()"></span>
+            </div>
+            <button type="button" class="btn btn-secondary" onclick="resetForm()">Limpiar</button>
+            <button type="button" class="btn btn-primary" onclick="saveToLocalStorage()">Guardar Local</button>
+            <button type="button" class="btn btn-success" onclick="exportJSON()">Exportar JSON</button>
+            <button type="button" class="btn btn-warning" onclick="exportExcel()">Exportar Excel</button>
+        </div>
+    </form>
+</div>
+<script src="js/vendor/xlsx.full.min.js"></script>
+<script src="js/db.js?v=1"></script>
+<script src="js/app.js?v=1"></script>
+</body>
+</html>
