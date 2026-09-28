@@ -333,13 +333,24 @@ function adminLogout() {
     document.getElementById('loginGate').style.display = '';
     document.getElementById('recordsPanel').style.display = 'none';
 }
-function autoLoadPreviousDay() {
+function preguntarCargaAnterior(fechaDestino) {
+    var list = getDataList();
+    if (list.length === 0) return;
+    var prev = list[list.length - 1];
+    if (!prev || !prev.fecha) return;
+    if (prev.fecha > fechaDestino) return;
+    if (prev.fecha === fechaDestino) { autoLoadPreviousDay(fechaDestino); return; }
+    if (confirm('Hay datos guardados del ' + prev.fecha + '. ¿Cargarlos como base del ' + fechaDestino + '?')) {
+        autoLoadPreviousDay(fechaDestino);
+    }
+}
+function autoLoadPreviousDay(fechaObjetivo) {
     var list = getDataList();
     if (list.length === 0) return;
     var prev = list[list.length - 1];
     if (!prev || !prev.campos) return;
     loadingRecord = true;
-    document.getElementById('fecha').value = new Date().toISOString().split('T')[0];
+    document.getElementById('fecha').value = fechaObjetivo || new Date().toISOString().split('T')[0];
     document.getElementById('turno').value = prev.turno || 'Mañanas';
     document.getElementById('operario1').value = prev.operario1 || '';
     filterOperario2();
@@ -397,7 +408,7 @@ document.getElementById('fecha').addEventListener('change', function(){
     if(list.length===0) return;
     var prev=list[list.length-1];
     if(!prev||!prev.fecha) return;
-    if(this.value > prev.fecha) autoLoadPreviousDay();
+    if(this.value > prev.fecha) preguntarCargaAnterior(this.value);
     this.dataset.prevFecha=this.value;
 });
 document.addEventListener('DOMContentLoaded', function(){
@@ -416,6 +427,6 @@ document.addEventListener('DOMContentLoaded', function(){
         var count=window._dataCache.length;
         var emptyMsg=document.getElementById('emptyDataMsg');
         if(emptyMsg) emptyMsg.style.display=count===0?'':'none';
-        if(count>0) autoLoadPreviousDay();
+        if(count>0) preguntarCargaAnterior(new Date().toISOString().split('T')[0]);
     });
 });

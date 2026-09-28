@@ -1,127 +1,105 @@
-# Checklist Digital de Mantenimiento Preventivo - Desarenadores
+# Checklist Digital de Mantenimiento Preventivo — Biológicos (Turno de Tardes)
 
-**EDAR Gijon Este - Grupo Tragsa**
+**EDAR Gijón Este — Grupo Tragsa**
 
-Aplicacion web local para la recogida digital de datos de mantenimiento preventivo de los 3 desarenadores (A, B, C) de la Estacion Depuradora de Aguas Residuales de Gijon Este.
+Aplicación web local para la recogida digital del checklist en papel **"CHECKLIST MANTENIMIENTO PREVENTIVO — BIOLÓGICOS"** (turno TARDES) de la Estación Depuradora de Aguas Residuales de Gijón Este. Sustituye los formularios en papel por un checklist digital. No requiere servidor, base de datos externa ni conexión a internet.
 
----
-
-## Que es esta aplicacion
-
-Herramienta interna para el personal de mantenimiento de la EDAR Gijon Este que sustituye los formularios en papel por un checklist digital. Permite registrar, guardar, consultar y exportar los datos de inspeccion de los desarenadores A, B y C.
-
-No requiere servidor, base de datos externa ni conexion a internet.
+> El checklist de Tardes **cambió**: antes contenía los desarenadores (ahora están en `../MANANA/`) y ahora es el de **Biológicos A-F + General Biológicos**. Ver `evolucion/paso10.md`.
 
 ---
 
-## Funcionalidades
+## Contenido del checklist
 
-### Formulario de inspeccion
-- **Datos del turno:** Fecha, turno (Mananas/Tardes/Noches), operario 1 y operario 2 (desplegable con filtrado cruzado)
-- **3 Desarenadores (A/B/C):** Cada uno con 5 secciones de inspeccion:
-  - Compuerta de entrada (SCADA, limpieza, ruidos, arranques)
-  - Puente (SCADA, horas, desplazamiento, rasquetas, anomalias, guias, finales de carrera, rozamientos, lonas)
-  - Bomba de arenas (funcionamiento, ruidos/fugas)
-  - Aireadores (SCADA, ruidos, horas por aireador A-E)
-  - Compuerta de grasas (SCADA, limpieza, ruidos, electrovalvula)
-- **Contenedor de arenas y grasas** (tubo agua, gavetas, cantidades)
-- **Observaciones generales** del turno
-- **Observaciones por campo** (48 inputs individuales por cada punto de inspeccion)
+### Pestañas
+
+| Pestaña | Contenido |
+|---------|-----------|
+| Biológico A … F | Por cada biológico (A-F): soplante de proceso (`712X_CS001`), medidor de temperatura (`712X_TI002`), 6 electroválvulas (`492X_VA001-VA006`), medidor de presión (`492X_PIT001`), 2 boyas (`492X_LSHH002/003`) y reja de entrada |
+| Biológico F (final) | + Tomamuestras de entrada, salida y entrada a biofiltro |
+| General | Hoja "GENERAL BIOLÓGICOS": bombeo intermedio `581A/B/C`, boyas/sensor/caudalímetro 581, boya `492_LSHH001`, bombas de lavado `594A/B/C`, depósito 594, soplines `713A/B/C`, medidor `713_TI002`, recuperación de agua sucia `612A/B/C`, caudalímetros `612A/B_FIT001`, bomba de oxazur `594_PO002`, bombeo de vaciados `921B_PO001A/B` y sus boyas |
+| Observaciones | Observaciones generales del turno (y firmas en el registro) |
+| Registros | Acceso de administrador para ver, cargar y exportar registros |
+
+Totales: **9 pestañas, 102 tarjetas de equipo, 21 grupos SCADA, 216 grupos de radio, 360 campos**.
 
 ### Control de estado de equipos
-Cada seccion tiene un selector de estado (Funcionando / Parado / Defecto electrico / No funciona). Cuando el equipo NO esta funcionando, se deshabilitan y limpian automaticamente todos sus campos.
+Cada tarjeta tiene un selector de estado (Funcionando / Parado / Defecto eléctrico / No funciona). Cuando el equipo no está funcionando se deshabilitan y limpian sus campos.
 
-### Validacion SCADA
-Cada grupo SCADA debe tener exactamente 2 opciones seleccionadas de las 4 disponibles (R, L, M, A). La validacion se salta si el equipo no esta en funcionamiento.
+### Validación SCADA
+Los grupos SCADA de tipo `R, L, M, A` (soplantes y bombas) exigen **exactamente 2 opciones** marcadas; se salta la validación si el equipo no está funcionando. Las electroválvulas usan selección única (`M`/`A` en SCADA y `A`/`C` en posición) porque son dos estados excluyentes.
 
-### Guardado y exportacion
-- **Guardar Local:** Guarda en el navegador con revision previa y deteccion de anomalias
-- **Exportar JSON:** Descarga un archivo `.json` con todos los datos del formulario
-- **Exportar Excel:** Genera un archivo `.xlsx` con 130+ columnas (SheetJS incluido offline)
-
-### Revision antes de guardar
-Modal con resumen completo de datos y deteccion automatica de anomalias en horas y arranques (variaciones superiores al 50% respecto al registro anterior).
-
-### Registros guardados (solo administrador)
-Acceso restringido con login. Tabla con fecha, turno, operarios y acciones (descargar JSON / cargar en formulario).
-
-### Auto-carga al iniciar
-Al abrir la pagina, se cargan automaticamente del ultimo registro guardado las horas de puentes y aireadores de los 3 desarenadores.
+### Guardado y exportación
+- **Guardar Local:** revisión previa en modal y guardado en el navegador + descarga de backup `.json`
+- **Exportar JSON / Exportar Excel:** SheetJS incluido en `js/vendor/` (funciona sin internet)
+- **Registros:** login de administrador, carga de registros y exportación
+- **Auto-carga:** al abrir, toma la fecha y los datos del último registro guardado
 
 ---
 
-## Como usar
+## Cómo usar
 
 1. Abrir `index.html` en un navegador (Chrome, Firefox o Edge)
-2. Rellenar la fecha, turno y operarios
-3. Ir pestana a pestana rellenando los datos de cada desarenador y el contenedor
-4. Pulsar **Guardar Local** - se mostrara un resumen con validacion antes de confirmar
-5. Para exportar todos los registros a Excel: **Exportar Excel**
-6. Para ver registros guardados (requiere login): pestana **Registros Guardados**
-
----
+2. Rellenar fecha, turno (Tardes) y operarios
+3. Recorrer las pestañas Biológico A → F → General
+4. **Guardar Local** (muestra el resumen antes de confirmar)
+5. **Exportar Excel** o **Exportar JSON** para sacar los datos
 
 ## Credenciales de administrador
 
 | Campo | Valor |
 |---|---|
 | Usuario | `admin` |
-| Contrasena | `edar2026` |
+| Contraseña | `edar2026` |
 
 ---
 
-## Estructura del proyecto
+## Estructura
 
 ```
 TARDE/
-├── index.html                  # Pagina principal del formulario
-├── css/
-│   └── styles.css              # Estilos de la aplicacion
+├── index.html                  # Formulario (generado por tools/generar_index.ps1)
+├── tools/
+│   └── generar_index.ps1       # Regenera index.html si cambia el checklist en papel
+├── css/styles.css
 ├── js/
-│   ├── db.js                   # Capa de persistencia (localStorage)
-│   ├── app.js                  # Logica de la aplicacion
-│   └── vendor/
-│       └── xlsx.full.min.js    # SheetJS para exportacion Excel (offline)
-├── img/
-│   └── logo_cabecera.png       # Logo de Grupo Tragsa
-├── db/                         # Datos y backups
-│   └── seed_prueba.json        # Datos de prueba para testing
-├── evolucion/                  # Historial de cambios dia a dia
-│   ├── paso1.md
-│   ├── paso2.md
-│   └── ...
-├── seed.html                   # Generador de datos de prueba
-└── README.md                   # Este archivo
+│   ├── db.js                   # Persistencia (clave localStorage edar_tarde_data)
+│   ├── app.js                  # Lógica genérica (recorre el DOM)
+│   └── vendor/xlsx.full.min.js # SheetJS offline
+├── img/logo_cabecera.png
+├── evolucion/paso1.md … paso10.md
+└── README.md
 ```
 
----
+Las fotos del checklist en papel están en `../Img/tarde/`:
 
-## Tecnologias
-
-| Tecnologia | Uso |
+| Archivo | Página |
 |---|---|
-| HTML5 | Estructura del formulario |
-| CSS3 | Estilos con variables CSS, Grid, Flexbox |
-| JavaScript vanilla | Toda la logica (sin frameworks) |
-| SheetJS (xlsx) | Exportacion a Excel offline |
-| localStorage | Almacenamiento persistente de registros |
+| `biologicos_pag1.jpg` | Biológico A + inicio de B |
+| `biologicos_pag2.jpg` | Final de B + inicio de C |
+| `biologicos_pag3.jpg` | Final de C + Biológico D + inicio de E |
+| `biologicos_pag4.jpg` | Final de E + inicio de F |
+| `biologicos_pag5.jpg` | Final de F + tomamuestras + observaciones |
+| `general_pag1.jpg` | General Biológicos (cabecera, 581, 594, 713A/B) |
+| `general_pag2.jpg` | General Biológicos (713C, 612, oxazur, 921B + firmas) |
 
 ---
 
-## Notas tecnicas
+## Regenerar el HTML
 
-- Las horas deben ser enteros (campo number sin decimales)
-- El SCADA requiere exactamente 2 selecciones de las 4 opciones (R, L, M, A)
-- SheetJS esta descargado localmente en `js/vendor/` para funcionar sin internet
-- Los datos se almacenan en localStorage con la clave `edar_checklist_data`
-- Cada guardado puede descargar automaticamente un backup `.json`
-- Si no hay datos al iniciar, se muestra un boton para importar un backup anterior
-- El generador de datos de prueba (`seed.html`) crea 10 registros secuenciales
+Si cambia la plantilla en papel:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File TARDE/tools/generar_index.ps1
+```
+
+El script genera `TARDE/index.html` (UTF-8). No editar el HTML a mano: cambiar códigos o añadir equipos se hace en el script.
 
 ---
 
-## Pendiente
+## Notas técnicas
 
-- [ ] Adaptar plantilla para turno de Mananas
-- [ ] Comparar plantillas Mananas vs Tardes y unificar diferencias
-- [ ] Posible modo edicion de registros existentes
+- Claves de almacenamiento: `edar_tarde_data` (registros) y `edar_tarde_last_backup` (último guardado)
+- Los registros antiguos de desarenadores siguen en `edar_checklist_data` y no se mezclan
+- Prefijos de campo: `t_a_…` … `t_f_…` (biológicos), `t_toma_…` (tomamuestras), `t_g_…` (general)
+- Las horas y arranques son campos numéricos; los valores con coma (`1,5`) se guardan como texto
+- SheetJS está en local: la exportación a Excel funciona sin internet
