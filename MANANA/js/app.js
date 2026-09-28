@@ -161,7 +161,7 @@ function exportJSON() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `checklist_tardes_${data.fecha}.json`;
+    a.download = `checklist_mananas_${data.fecha}.json`;
     a.click();
 }
 function buildExcelRows(list) {
@@ -199,7 +199,7 @@ function exportExcel() {
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'Registros');
     const fecha = new Date().toISOString().split('T')[0];
-    XLSX.writeFile(wb, `checklist_tardes_${fecha}.xlsx`);
+    XLSX.writeFile(wb, `checklist_mananas_${fecha}.xlsx`);
 }
 function loadSavedRecords() {
     var list = getDataList();
@@ -278,7 +278,7 @@ function loadRecord(index) {
                 }
             }
         });
-        switchTab('bioA');
+        switchTab('terciario');
         alert('Registro cargado correctamente.');
     } catch(e) { alert('Error al cargar: ' + e.message); }
     loadingRecord = false;
@@ -340,7 +340,7 @@ function autoLoadPreviousDay() {
     if (!prev || !prev.campos) return;
     loadingRecord = true;
     document.getElementById('fecha').value = new Date().toISOString().split('T')[0];
-    document.getElementById('turno').value = prev.turno || 'Tardes';
+    document.getElementById('turno').value = prev.turno || 'Mañanas';
     document.getElementById('operario1').value = prev.operario1 || '';
     filterOperario2();
     document.getElementById('operario2').value = prev.operario2 || '';

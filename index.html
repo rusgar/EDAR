@@ -16,7 +16,7 @@
         .portal-title { text-align:center; margin-bottom:32px; }
         .portal-title h2 { color:var(--primary); font-size:1.6rem; margin-bottom:8px; }
         .portal-title p { color:var(--muted); }
-        .cards { display:grid; grid-template-columns:1fr 1fr; gap:24px; }
+        .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:24px; }
         @media(max-width:600px){ .cards{ grid-template-columns:1fr; } }
         .card { background:var(--card); border-radius:12px; padding:28px; border:1px solid var(--border); text-align:center; transition:transform 0.15s, box-shadow 0.15s; cursor:pointer; text-decoration:none; color:inherit; display:block; }
         .card:hover { transform:translateY(-4px); box-shadow:0 8px 24px rgba(0,0,0,0.1); border-color:var(--primary-light); }
@@ -24,6 +24,8 @@
         .card h3 { color:var(--primary); font-size:1.25rem; margin-bottom:6px; }
         .card p { color:var(--muted); font-size:0.88rem; line-height:1.4; }
         .card .badge { display:inline-block; margin-top:12px; background:var(--primary); color:#fff; padding:6px 18px; border-radius:20px; font-size:0.82rem; font-weight:600; }
+        .card.manana .badge { background:#b45309; }
+        .card.manana:hover { border-color:#b45309; }
         .card.noche .badge { background:#0f766e; }
         .card.noche:hover { border-color:#0f766e; }
         footer { text-align:center; padding:16px; color:var(--muted); font-size:0.78rem; border-top:1px solid var(--border); margin-top:40px; }
@@ -43,6 +45,12 @@
         <p>Elige el checklist correspondiente a tu turno de trabajo</p>
     </div>
     <div class="cards">
+        <a class="card manana" href="MANANA/index.html">
+            <div class="icon">🌅</div>
+            <h3>Turno de Mañanas</h3>
+            <p>Tratamiento terciario + desarenadores A, B, C<br>Tomamuestras y contenedor de arenas y grasas</p>
+            <span class="badge">Abrir checklist →</span>
+        </a>
         <a class="card tarde" href="TARDE/index.html">
             <div class="icon">☀️</div>
             <h3>Turno de Tardes</h3>

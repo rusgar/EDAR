@@ -11,7 +11,15 @@ EDAR/
 ├── index.html              # Portal selector de turno
 ├── README.md               # Este archivo
 ├── Img/                    # Imágenes de referencia (logo, fotos checklist papel)
-│   └── noche/              # Fotos del checklist de Noches (6 páginas)
+│   ├── noche/              # Fotos del checklist de Noches (6 páginas)
+│   └── manana/             # Fotos del checklist de Mañanas (4 páginas)
+├── MANANA/                 # Turno de Mañanas — Tratamiento Terciario + Desarenadores A/B/C
+│   ├── index.html
+│   ├── css/styles.css
+│   ├── js/app.js, db.js, vendor/xlsx.full.min.js
+│   ├── img/logo_cabecera.png
+│   ├── evolucion/paso1.md
+│   └── README.md
 ├── TARDE/                  # Turno de Tardes — Desarenadores A, B, C
 │   ├── index.html
 │   ├── css/styles.css
@@ -34,6 +42,7 @@ EDAR/
 
 1. Abrir `EDAR/index.html` en el navegador (Chrome, Firefox o Edge)
 2. Elegir turno:
+   - **Mañanas** → Tratamiento Terciario (bombeo, caudalímetros, filtro de discos, UV, medidores, tomamuestras) + Desarenadores A/B/C + contenedor. Ver `MANANA/README.md`.
    - **Tardes** → Desarenadores A/B/C (compuertas, puentes, bombas, aireadores, contenedor). Ver `TARDE/README.md`.
    - **Noches** → Checklist GENERAL (caudalímetros, clasificador, separador, pozos de bombeo, servicios auxiliares, fangos, etc.)
 3. Dentro de cada checklist: rellenar fecha/turno/operarios → pestañas → **Guardar Local** (con revisión) → **Exportar Excel/JSON**
@@ -42,6 +51,7 @@ EDAR/
 
 | Carpeta | Checklists | Puntos de control | Almacenamiento |
 |---------|------------|-------------------|----------------|
+| `MANANA/` | Tratamiento Terciario (13 equipos + tomamuestras) + Desarenadores A/B/C + Contenedor | ~95 puntos | `edar_manana_data` |
 | `TARDE/` | Desarenadores A, B, C + Contenedor | ~130 columnas Excel | `edar_checklist_data` |
 | `NOCHE/` | General + Bombeo complementario + Servicios auxiliares + Fangos | ~130 puntos | `edar_noche_data` |
 
@@ -63,5 +73,6 @@ Los datos de cada turno están aislados (claves distintas en localStorage).
 ## Pendiente
 
 - [ ] Validar códigos exactos del checklist de Noches con operario (algunos borrosos)
-- [ ] Seed específico para NOCHE con datos reales
+- [ ] Seed específico para NOCHE y MANANA con datos reales (esquema genérico `campos`)
 - [ ] README de NOCHE y revisión del README de TARDE
+- [ ] Añadir foto de la página 1 de Tratamiento Terciario en `Img/manana/`

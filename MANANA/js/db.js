@@ -1,6 +1,6 @@
-var DB = (function() {
-    var STORAGE_KEY = 'edar_tarde_data';
-    var BACKUP_KEY = 'edar_tarde_last_backup';
+﻿var DB = (function() {
+    var STORAGE_KEY = 'edar_manana_data';
+    var BACKUP_KEY = 'edar_manana_last_backup';
 
     function getAll() {
         try {
