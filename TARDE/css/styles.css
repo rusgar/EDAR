@@ -172,7 +172,11 @@ th, td {
     text-align: left;
     border-bottom: 1px solid var(--border);
     font-size: 0.9rem;
+    overflow-wrap: break-word;
 }
+
+input, select, textarea { max-width: 100%; }
+td input[type="number"], td input[type="text"], td select { width: 100%; }
 
 th {
     background-color: #f1f5f9;
@@ -184,6 +188,7 @@ th {
     display: flex;
     gap: 12px;
     align-items: center;
+    flex-wrap: wrap;
 }
 
 .radio-label {
@@ -247,7 +252,14 @@ th {
     margin-bottom: 20px;
     border-bottom: 2px solid var(--border);
     padding-bottom: 2px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
 }
+
+.tabs::-webkit-scrollbar { height: 6px; }
+.tabs::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
 
 .tab-btn {
     padding: 10px 20px;
@@ -258,6 +270,8 @@ th {
     cursor: pointer;
     border-bottom: 3px solid transparent;
     transition: all 0.2s;
+    white-space: nowrap;
+    flex: 0 0 auto;
 }
 
 .tab-btn.active {
@@ -376,4 +390,37 @@ pre {
     font-size: 0.85rem;
     overflow-x: auto;
     white-space: pre-wrap;
+}
+
+/* ===== Responsive (móvil y tablet) ===== */
+.actions-bar { flex-wrap: wrap; }
+
+@media (max-width: 768px) {
+    body { padding: 12px; }
+    header { padding: 14px 16px; margin-bottom: 16px; }
+    .header-content { flex-wrap: wrap; gap: 10px; }
+    .header-logo { height: 44px; }
+    header h1 { font-size: 1.2rem; }
+    header p { font-size: 0.85rem; }
+    .card { padding: 14px; }
+    .tab-btn { padding: 8px 12px; font-size: 0.85rem; }
+    th, td { padding: 7px 6px; font-size: 0.82rem; }
+    .btn { padding: 9px 12px; font-size: 0.82rem; }
+    .actions-bar { padding: 12px; gap: 8px; justify-content: center; bottom: 10px; }
+    .modal-content { width: 96%; padding: 16px; }
+    .review-row { flex-wrap: wrap; gap: 2px 8px; }
+    .review-row .value { text-align: right; word-break: break-word; }
+    .login-card { margin: 20px auto; }
+}
+
+@media (max-width: 480px) {
+    body { padding: 8px; }
+    header h1 { font-size: 1.05rem; }
+    header p { font-size: 0.78rem; }
+    .header-logo { height: 36px; }
+    .equipment-status { flex-wrap: wrap; gap: 6px; }
+    .scada-group, .radio-group { gap: 8px; }
+    .section-header { font-size: 0.88rem; }
+    .card-title { font-size: 1.05rem; }
+    .grid-2, .grid-3 { grid-template-columns: 1fr; }
 }
