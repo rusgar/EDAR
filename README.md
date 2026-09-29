@@ -10,6 +10,9 @@ Aplicación web local para la recogida digital de datos de mantenimiento prevent
 EDAR/
 ├── index.html              # Portal selector de turno
 ├── admin.html              # Consola de administración (los 3 turnos, con contraseña)
+├── documentacion/          # Historial de pasos y referencia de funciones
+│   ├── pasos.md            # Cómo empezamos y cada cambio, paso a paso
+│   └── funciones.md        # Qué hace cada función JS (app.js, db.js, admin, API)
 ├── README.md               # Este archivo
 ├── backups/                # Backups por día (JSON) para importar en cada checklist
 │   └── backup_2026-09-27_{manana,tarde,noche}.json
