@@ -279,6 +279,7 @@ function loadRecord(index) {
             }
         });
         switchTab('terciario');
+        borrarDraft();
         alert('Registro cargado correctamente.');
     } catch(e) { alert('Error al cargar: ' + e.message); }
     loadingRecord = false;
@@ -308,11 +309,17 @@ function closeReviewModal() { document.getElementById('reviewModal').classList.r
 function confirmSave() {
     if (!pendingSaveData) return;
     window._dataCache.push(pendingSaveData);
+    var registroSubido = pendingSaveData;
     persistData(function() {
         DB.exportToFile();
         closeReviewModal();
-        alert('Datos guardados. Backup descargado.');
+        borrarDraft();
         pendingSaveData = null;
+        subirRegistro(registroSubido, function(ok){
+            alert(ok
+                ? 'Datos guardados y sincronizados con el servidor. Backup descargado.'
+                : 'Datos guardados en este dispositivo (sin sincronizar con el servidor). Backup descargado.');
+        });
     });
 }
 function adminLogin() {
@@ -333,6 +340,96 @@ function adminLogout() {
     document.getElementById('loginGate').style.display = '';
     document.getElementById('recordsPanel').style.display = 'none';
 }
+var DRAFT_KEY = 'edar_manana_draft';
+var TURNO_SYNC = 'manana';
+var draftTimer = null;
+var formDirty = false;
+function scheduleDraftSave() {
+    if (!formDirty) return;
+    clearTimeout(draftTimer);
+    draftTimer = setTimeout(saveDraft, 800);
+}
+function saveDraft() {
+    if (!formDirty) return;
+    try {
+        var data = collectFormData();
+        var conContenido = !!(data.operario1 || data.operario2 || data.observaciones_generales);
+        var cs = data.campos || {};
+        if (!conContenido) {
+            for (var k in cs) {
+                var v = cs[k];
+                if (v != null && v !== '' && v !== false) { conContenido = true; break; }
+            }
+        }
+        if (!conContenido) { try { localStorage.removeItem(DRAFT_KEY); } catch (e2) {} return; }
+        data._guardado = new Date().toISOString();
+        localStorage.setItem(DRAFT_KEY, JSON.stringify(data));
+    } catch (e) {}
+}
+function borrarDraft() {
+    formDirty = false;
+    clearTimeout(draftTimer);
+    try { localStorage.removeItem(DRAFT_KEY); } catch (e) {}
+}
+function recuperarDraft() {
+    var raw = null;
+    try { raw = localStorage.getItem(DRAFT_KEY); } catch (e) {}
+    if (!raw) return false;
+    var d = null;
+    try { d = JSON.parse(raw); } catch (e) {}
+    if (!d || !d.campos) { try { localStorage.removeItem(DRAFT_KEY); } catch (e3) {} return false; }
+    if (!confirm('Se encontraron datos sin guardar' + (d.fecha ? ' del ' + d.fecha : '') + '. ¿Recuperarlos?')) {
+        try { localStorage.removeItem(DRAFT_KEY); } catch (e4) {}
+        return false;
+    }
+    applyDataToForm(d, d.fecha || '');
+    formDirty = true;
+    return true;
+}
+function mergeListas(a, b) {
+    var mapa = {};
+    (a || []).forEach(function (r) { if (r && r.id) mapa[r.id] = r; });
+    (b || []).forEach(function (r) {
+        if (!r || !r.id) return;
+        var prev = mapa[r.id];
+        if (!prev || !prev.timestamp || (r.timestamp && r.timestamp >= prev.timestamp)) mapa[r.id] = r;
+    });
+    return Object.keys(mapa).map(function (k) { return mapa[k]; });
+}
+function sincronizarDesdeServidor(callback) {
+    var hecho = function (ok) { if (callback) callback(ok); };
+    if (typeof fetch !== 'function' || location.protocol === 'file:') { hecho(false); return; }
+    try {
+        fetch('/api/datos?turno=' + TURNO_SYNC, { cache: 'no-store' })
+            .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+            .then(function (d) {
+                var remota = (d && d.registros) || [];
+                var mezcla = mergeListas(getDataList(), remota);
+                window._dataCache = mezcla;
+                DB.saveAll(mezcla, function () { DB.updateBackupStatus(); hecho(true); });
+            })
+            .catch(function () { hecho(false); });
+    } catch (e) { hecho(false); }
+}
+function subirRegistro(reg, callback) {
+    var hecho = function (ok) { if (callback) callback(ok); };
+    if (typeof fetch !== 'function' || location.protocol === 'file:' || !reg) { hecho(false); return; }
+    try {
+        fetch('/api/datos?turno=' + TURNO_SYNC, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ registros: [reg] })
+        })
+            .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+            .then(function (d) {
+                var remota = (d && d.registros) || [];
+                var mezcla = mergeListas(getDataList(), remota);
+                window._dataCache = mezcla;
+                DB.saveAll(mezcla, function () { DB.updateBackupStatus(); hecho(true); });
+            })
+            .catch(function () { hecho(false); });
+    } catch (e) { hecho(false); }
+}
 function preguntarCargaAnterior(fechaDestino) {
     var list = getDataList();
     if (list.length === 0) return;
@@ -349,14 +446,17 @@ function autoLoadPreviousDay(fechaObjetivo) {
     if (list.length === 0) return;
     var prev = list[list.length - 1];
     if (!prev || !prev.campos) return;
+    applyDataToForm(prev, fechaObjetivo || new Date().toISOString().split('T')[0]);
+}
+function applyDataToForm(r, fechaDestino) {
     loadingRecord = true;
-    document.getElementById('fecha').value = fechaObjetivo || new Date().toISOString().split('T')[0];
-    document.getElementById('turno').value = prev.turno || 'Mañanas';
-    document.getElementById('operario1').value = prev.operario1 || '';
+    if (fechaDestino) document.getElementById('fecha').value = fechaDestino;
+    document.getElementById('turno').value = r.turno || 'Mañanas';
+    document.getElementById('operario1').value = r.operario1 || '';
     filterOperario2();
-    document.getElementById('operario2').value = prev.operario2 || '';
-    document.getElementById('observaciones_generales').value = prev.observaciones_generales || '';
-    const campos = prev.campos || {};
+    document.getElementById('operario2').value = r.operario2 || '';
+    document.getElementById('observaciones_generales').value = r.observaciones_generales || '';
+    const campos = r.campos || {};
     if (campos._estados) {
         const selects = document.querySelectorAll('.card .status-select');
         const vals = Object.values(campos._estados);
@@ -389,7 +489,7 @@ function importBackupFile() {
     var input=document.getElementById('backupFileInput');
     if(input.files.length===0){ alert('Seleccione un archivo .json'); return; }
     DB.importFromFile(input.files[0], function(ok){
-        if(ok){ loadDataFromDB(function(){ DB.updateBackupStatus(); var e=document.getElementById('emptyDataMsg'); if(e) e.style.display='none'; if(adminAutenticado) loadSavedRecords(); autoLoadPreviousDay(); }); }
+        if(ok){ loadDataFromDB(function(){ DB.updateBackupStatus(); var e=document.getElementById('emptyDataMsg'); if(e) e.style.display='none'; if(adminAutenticado) loadSavedRecords(); borrarDraft(); autoLoadPreviousDay(); }); }
         input.value='';
     });
 }
@@ -400,6 +500,7 @@ function resetForm() {
         document.querySelectorAll('.scada-group').forEach(g=>g.classList.remove('has-error'));
         var sel2=document.getElementById('operario2');
         for(var i=1;i<sel2.options.length;i++) sel2.options[i].disabled=false;
+        borrarDraft();
     }
 }
 document.getElementById('fecha').addEventListener('change', function(){
@@ -424,9 +525,18 @@ document.addEventListener('DOMContentLoaded', function(){
     });
     loadDataFromDB(function(){
         DB.updateBackupStatus();
-        var count=window._dataCache.length;
-        var emptyMsg=document.getElementById('emptyDataMsg');
-        if(emptyMsg) emptyMsg.style.display=count===0?'':'none';
-        if(count>0) preguntarCargaAnterior(new Date().toISOString().split('T')[0]);
+        sincronizarDesdeServidor(function(){
+            var count=window._dataCache.length;
+            var emptyMsg=document.getElementById('emptyDataMsg');
+            if(emptyMsg) emptyMsg.style.display=count===0?'':'none';
+            if(recuperarDraft()) return;
+            if(count>0) preguntarCargaAnterior(new Date().toISOString().split('T')[0]);
+        });
     });
+    var form=document.getElementById('checklistForm');
+    if(form){
+        form.addEventListener('input', function(){ formDirty=true; scheduleDraftSave(); });
+        form.addEventListener('change', function(){ formDirty=true; scheduleDraftSave(); });
+    }
+    window.addEventListener('beforeunload', function(){ if(formDirty && draftTimer){ clearTimeout(draftTimer); saveDraft(); } });
 });

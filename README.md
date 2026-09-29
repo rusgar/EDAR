@@ -2,7 +2,7 @@
 
 **Grupo Tragsa**
 
-Aplicación web local para la recogida digital de datos de mantenimiento preventivo de la EDAR Gijón Este. Sin servidor, sin base de datos externa y sin necesidad de internet.
+Aplicación web local para la recogida digital de datos de mantenimiento preventivo de la EDAR Gijón Este. Sin servidor, sin base de datos externa y sin necesidad de internet. **Opcional:** se puede publicar en Netlify para que varias tablets compartan los mismos datos (ver [Despliegue en Netlify](#despliegue-en-netlify-varias-tablets)).
 
 ## Estructura
 
@@ -12,6 +12,10 @@ EDAR/
 ├── README.md               # Este archivo
 ├── backups/                # Backups por día (JSON) para importar en cada checklist
 │   └── backup_2026-09-27_{manana,tarde,noche}.json
+├── netlify.toml            # Configuración de despliegue (publica la raíz)
+├── netlify/functions/
+│   └── api-datos.mjs       # API GET/POST /api/datos?turno=… (Netlify Blobs)
+├── package.json            # Dependencia @netlify/blobs
 ├── Img/                    # Imágenes de referencia (logo, fotos checklist papel)
 │   ├── noche/              # Fotos del checklist de Noches (6 páginas)
 │   ├── manana/             # Fotos del checklist de Mañanas (4 páginas)
@@ -52,6 +56,8 @@ EDAR/
 
 El desplegable "Turno" ya no existe: el turno se fija al entrar desde el portal. Para cargar un día guardado, abrir el checklist con el navegador sin datos y pulsar **Importar backup** (enlace que aparece cuando no hay registros) eligiendo el JSON de `backups/`: los datos se cargan **en la fecha de hoy**. Al guardar un día y abrir la app al día siguiente (o al cambiar la fecha a un día posterior), **aparece un mensaje preguntando** si quieres cargar los datos del día anterior como base; al aceptar, los datos se cargan **con la fecha que tú hayas elegido** (no se sobreescribe con la de hoy).
 
+Además, cualquier cambio del formulario se **guarda solo como borrador** al cerrar la app; al reabrir pregunta *"Se encontraron datos sin guardar del día X. ¿Recuperarlos?"* (y se borra automáticamente al pulsar Guardar). Ojo: ese almacenamiento vive en el **navegador y el PC** con el que se trabaje (OneDrive no lo sincroniza), así que hay que usar siempre el mismo navegador.
+
 ## Turnos
 
 | Carpeta | Checklists | Puntos de control | Almacenamiento |
@@ -62,12 +68,36 @@ El desplegable "Turno" ya no existe: el turno se fija al entrar desde el portal.
 
 Los datos de cada turno están aislados (claves distintas en localStorage).
 
+## Despliegue en Netlify (varias tablets)
+
+Para que varios trabajadores compartan los mismos datos desde sus tablets, el repo incluye una función serverless que guarda los registros en **Netlify Blobs** (`netlify/functions/api-datos.mjs`, endpoint `GET/POST /api/datos?turno=manana|tarde|noche`).
+
+**Cómo funciona**
+
+- Al abrir la app descarga los registros del turno desde el servidor y los mezcla con los locales (también se guardan en el navegador, así la app sigue funcionando sin conexión).
+- Al pulsar **Guardar Local** el registro se sube al servidor: aviso *"…sincronizados con el servidor"* o *"…sin sincronizar con el servidor"* si no hay red.
+- El **borrador** sigue siendo local de cada tablet; el **Excel/JSON** de descarga sigue funcionando igual.
+- Abriendo los archivos con `file://` (uso local) no hay servidor: la app se comporta igual que siempre, solo local.
+
+**Pasos para publicar**
+
+1. Subir el repo a GitHub (ya está: `github.com/rusgar/EDAR`).
+2. En [app.netlify.com](https://app.netlify.com) → **Add new site** → **Import an existing project** → elegir el repo.
+3. Netlify detecta `netlify.toml` (instala dependencias, empaqueta la function y publica la raíz) → **Deploy**.
+4. La URL pública (`https://<sitio>.netlify.app`) es la que se abra en las tablets; usar siempre el mismo navegador en cada tablet.
+
+**Notas**
+
+- Los datos viven en Netlify Blobs (tienda `checklists-edar`), no en el repo; respaldo manual con **Exportar Excel/JSON**.
+- La API no tiene contraseña: cualquiera con la URL puede leer/escribir. Para uso interno basta; si queréis, se añade un token.
+
 ## Tecnologías
 
 - HTML5 + CSS3 (variables, Grid, Flexbox)
 - JavaScript vanilla (sin frameworks)
 - SheetJS (`xlsx.full.min.js` local, 882 KB) para Excel offline
 - localStorage para persistencia (`file://` compatible)
+- Netlify Functions + Netlify Blobs (opcional): `GET/POST /api/datos` para compartir datos entre tablets
 
 ## Notas
 

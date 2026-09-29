@@ -1,0 +1,12 @@
+{
+  "name": "edar-checklists",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Checklists EDAR - sitio estatico con Netlify Functions (Blobs) para compartir datos entre tablets",
+  "scripts": {
+    "build": "echo 'sin build: sitio estatico'"
+  },
+  "dependencies": {
+    "@netlify/blobs": "^11.1.1"
+  }
+}

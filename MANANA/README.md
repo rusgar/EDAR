@@ -90,9 +90,11 @@ Las fotos del checklist en papel están en `Img/manana/`.
 
 ## Notas técnicas
 
-- Los datos se almacenan en localStorage con la clave **`edar_manana_data`** (aislada de TARDES `edar_checklist_data` y NOCHES `edar_noche_data`)
+- Los datos se almacenan en localStorage con la clave **`edar_manana_data`** (TARDES: `edar_tarde_data`, NOCHES: `edar_noche_data`); el borrador sin guardar va en **`edar_manana_draft`**
 - Prefijo de nombres de campo: **`m_`**
 - Cada guardado descarga automáticamente un backup `.json`
+- **Autoguardado de borrador:** cada cambio se guarda solo; al cerrar y reabrir la app pregunta *"Se encontraron datos sin guardar del día X. ¿Recuperarlos?"*. Al guardar, limpiar el formulario o importar un backup, el borrador se borra
+- El almacenamiento es del **navegador y del PC** (no lo sincroniza OneDrive): usar siempre el mismo navegador
 - Si no hay datos al iniciar, se muestra un botón para importar un backup anterior
 - Base arquitectónica: `NOCHE/` (recolección genérica de campos sobre el DOM)
 
