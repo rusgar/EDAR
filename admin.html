@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consola Admin - EDAR Gijón Este</title>
+    <script src="MANANA/js/vendor/xlsx.full.min.js"></script>
+    <style>
+        :root { --primary:#1e3a8a; --primary-light:#3b82f6; --bg:#f1f5f9; --card:#fff; --text:#1e293b; --muted:#64748b; --border:#e2e8f0; --ok:#15803d; --warn:#b45309; }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body { font-family:'Segoe UI',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; display:flex; flex-direction:column; }
+        header { background:var(--primary); color:#fff; padding:14px 24px; display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; }
+        header h1 { font-size:1.15rem; }
+        header img { height:40px; background:#fff; border-radius:6px; padding:3px 8px; }
+        .btn { border:0; border-radius:8px; padding:9px 16px; font-size:0.88rem; font-weight:600; cursor:pointer; background:var(--primary-light); color:#fff; }
+        .btn:hover { filter:brightness(1.08); }
+        .btn.sec { background:#e2e8f0; color:var(--text); }
+        .btn.ok { background:var(--ok); }
+        main { flex:1; width:100%; max-width:1400px; margin:0 auto; padding:20px; }
+        .login-wrap { display:flex; justify-content:center; align-items:center; min-height:70vh; }
+        .login-card { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:32px; width:100%; max-width:380px; box-shadow:0 8px 24px rgba(0,0,0,0.06); }
+        .login-card h2 { color:var(--primary); font-size:1.2rem; margin-bottom:6px; text-align:center; }
+        .login-card p.sub { color:var(--muted); font-size:0.82rem; text-align:center; margin-bottom:18px; }
+        .login-card label { display:block; font-size:0.82rem; color:var(--muted); margin:12px 0 4px; }
+        .login-card input { width:100%; padding:10px; border:1px solid var(--border); border-radius:8px; font-size:0.95rem; }
+        .login-card .btn { width:100%; margin-top:18px; }
+        .err { color:#b91c1c; font-size:0.82rem; margin-top:10px; text-align:center; }
+        .toolbar { display:flex; flex-wrap:wrap; gap:10px; align-items:flex-end; background:var(--card); border:1px solid var(--border); border-radius:12px; padding:14px; margin-bottom:14px; }
+        .toolbar label { font-size:0.75rem; color:var(--muted); display:flex; flex-direction:column; gap:4px; }
+        .toolbar input, .toolbar select { padding:8px; border:1px solid var(--border); border-radius:8px; font-size:0.88rem; background:#fff; }
+        .toolbar .spacer { flex:1; }
+        .conteos { display:flex; gap:8px; flex-wrap:wrap; }
+        .chip { background:#eef2ff; color:var(--primary); border:1px solid #c7d2fe; border-radius:20px; padding:5px 12px; font-size:0.78rem; font-weight:600; }
+        #aviso { background:#fef3c7; border:1px solid #fcd34d; color:#92400e; padding:10px 14px; border-radius:8px; margin-bottom:12px; font-size:0.85rem; display:none; }
+        table.resumen { width:100%; border-collapse:collapse; background:var(--card); border:1px solid var(--border); border-radius:12px; overflow:hidden; }
+        table.resumen th, table.resumen td { padding:10px 12px; text-align:left; border-bottom:1px solid var(--border); font-size:0.86rem; }
+        table.resumen thead th { background:var(--primary); color:#fff; font-size:0.8rem; position:sticky; top:0; }
+        table.resumen tbody tr { cursor:pointer; }
+        table.resumen tbody tr:hover { background:#f8fafc; }
+        table.resumen tbody tr:last-child td { border-bottom:0; }
+        td.turno { font-weight:600; }
+        .vacio { text-align:center; color:var(--muted); padding:36px; background:var(--card); border:1px dashed var(--border); border-radius:12px; }
+        .overlay { position:fixed; inset:0; background:rgba(15,23,42,0.55); display:none; align-items:flex-start; justify-content:center; padding:4vh 16px; z-index:50; overflow:auto; }
+        .modal { background:var(--card); border-radius:12px; width:100%; max-width:1000px; padding:20px; }
+        .modal h3 { color:var(--primary); margin-bottom:4px; }
+        .modal .meta { color:var(--muted); font-size:0.82rem; margin-bottom:14px; }
+        .modal .acciones { display:flex; gap:8px; margin-bottom:14px; }
+        .campos { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:6px; }
+        .campo { border:1px solid var(--border); border-radius:8px; padding:6px 9px; font-size:0.8rem; background:#f8fafc; }
+        .campo b { display:block; color:var(--primary); font-weight:600; word-break:break-all; }
+        .campo span { color:var(--text); word-break:break-word; }
+        .campo.vacio-c { opacity:0.5; }
+        .seccion { margin:16px 0 8px; font-size:0.9rem; color:var(--primary); font-weight:700; }
+        footer { text-align:center; padding:14px; color:var(--muted); font-size:0.76rem; border-top:1px solid var(--border); }
+        @media(max-width:700px){ .toolbar input, .toolbar select { max-width:130px; } table.resumen th:nth-child(5), table.resumen td:nth-child(5) { display:none; } }
+    </style>
+</head>
+<body>
+<header>
+    <div style="display:flex;align-items:center;gap:12px;">
+        <img src="TARDE/img/logo_cabecera.png" alt="Grupo Tragsa">
+        <div>
+            <h1>Consola de administración</h1>
+            <p style="font-size:0.78rem;opacity:0.85;">EDAR Gijón Este — vista global de los 3 turnos</p>
+        </div>
+    </div>
+    <div style="display:flex;gap:8px;">
+        <button class="btn sec" id="btnSalir" style="display:none;">Salir</button>
+        <a class="btn sec" style="text-decoration:none;" href="index.html">← Portal</a>
+    </div>
+</header>
+
+<main>
+    <div class="login-wrap" id="login">
+        <form class="login-card" id="loginForm">
+            <h2>Acceso restringido</h2>
+            <p class="sub">Introduce las credenciales del administrador</p>
+            <label for="usuario">Usuario</label>
+            <input id="usuario" autocomplete="username">
+            <label for="clave">Contraseña</label>
+            <input id="clave" type="password" autocomplete="current-password">
+            <button class="btn" type="submit">Entrar</button>
+            <p class="err" id="loginErr" style="display:none;">Usuario o contraseña incorrectos.</p>
+        </form>
+    </div>
+
+    <div id="consola" style="display:none;">
+        <div class="toolbar">
+            <label>Desde<input type="date" id="fDesde"></label>
+            <label>Hasta<input type="date" id="fHasta"></label>
+            <label>Turno<select id="fTurno">
+                <option value="">Todos</option>
+                <option value="Mañanas">Mañanas</option>
+                <option value="Tardes">Tardes</option>
+                <option value="Noches">Noches</option>
+            </select></label>
+            <label>Buscar<input type="search" id="fTexto" placeholder="operario u observación" style="min-width:170px;"></label>
+            <div class="spacer"></div>
+            <div class="conteos" id="conteos"></div>
+            <button class="btn ok" id="btnExcel">⬇ Excel (3 turnos)</button>
+            <button class="btn" id="btnRefrescar">⟳ Actualizar</button>
+        </div>
+        <div id="aviso"></div>
+        <div id="resultado"></div>
+    </div>
+</main>
+
+<div class="overlay" id="overlay">
+    <div class="modal">
+        <h3 id="dTitulo"></h3>
+        <p class="meta" id="dMeta"></p>
+        <div class="acciones">
+            <button class="btn sec" id="dCerrar">✕ Cerrar</button>
+            <button class="btn ok" id="dExcel">⬇ Excel de este registro</button>
+        </div>
+        <div id="dCuerpo"></div>
+    </div>
+</div>
+
+<footer>EDAR Gijón Este — Grupo Tragsa · Consola admin · Datos en Netlify Blobs (se actualizan al pulsar «Actualizar»)</footer>
+
+<script>
+var ADMIN_USER = 'admin';
+var ADMIN_PASS = 'edar2026';
+var TURNOS = [
+    { k:'manana', label:'Mañanas' },
+    { k:'tarde',  label:'Tardes'  },
+    { k:'noche',  label:'Noches'  }
+];
+var todos = [];
+var filtrados = [];
+var modoLocal = false;
+
+function $(id){ return document.getElementById(id); }
+
+$('loginForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    if ($('usuario').value.trim() === ADMIN_USER && $('clave').value === ADMIN_PASS) {
+        sessionStorage.setItem('edar_admin', '1');
+        $('loginErr').style.display = 'none';
+        entrar();
+    } else {
+        $('loginErr').style.display = '';
+    }
+});
+$('btnSalir').addEventListener('click', function(){
+    sessionStorage.removeItem('edar_admin');
+    location.reload();
+});
+
+function entrar(){
+    $('login').style.display = 'none';
+    $('consola').style.display = '';
+    $('btnSalir').style.display = '';
+    cargarDatos(function(err){
+        if (err) {
+            mostrarAviso('No se pudo leer el servidor (' + err.message + '). Comprueba la conexión y pulsa «Actualizar».');
+        } else if (modoLocal) {
+            mostrarAviso('Modo local (sin servidor): solo se ven los registros guardados en este equipo.');
+        }
+        render();
+    });
+}
+
+function mostrarAviso(txt){
+    $('aviso').textContent = txt;
+    $('aviso').style.display = txt ? '' : 'none';
+}
+
+function cargarDatos(cb){
+    if (location.protocol === 'http:' || location.protocol === 'https:') {
+        Promise.all(TURNOS.map(function(t){
+            return fetch('api/datos?turno=' + t.k, { cache:'no-store' })
+                .then(function(r){ if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); });
+        })).then(function(res){
+            todos = [];
+            res.forEach(function(d, i){
+                (d.registros || []).forEach(function(r){ r._turnoKey = TURNOS[i].k; todos.push(r); });
+            });
+            modoLocal = false;
+            cb(null);
+        }).catch(function(e){ cb(e); });
+    } else {
+        todos = [];
+        TURNOS.forEach(function(t){
+            try {
+                var l = JSON.parse(localStorage.getItem('edar_' + t.k + '_data') || '[]');
+                l.forEach(function(r){ r._turnoKey = t.k; todos.push(r); });
+            } catch(e){}
+        });
+        modoLocal = true;
+        cb(null);
+    }
+}
+
+function filtrar(){
+    var d1 = $('fDesde').value, d2 = $('fHasta').value, tk = $('fTurno').value;
+    var txt = $('fTexto').value.trim().toLowerCase();
+    return todos.filter(function(r){
+        if (d1 && (!r.fecha || r.fecha < d1)) return false;
+        if (d2 && (!r.fecha || r.fecha > d2)) return false;
+        if (tk && r.turno !== tk) return false;
+        if (txt) {
+            var heno = ((r.operario1||'') + ' ' + (r.operario2||'') + ' ' + (r.observaciones_generales||'')).toLowerCase();
+            if (heno.indexOf(txt) < 0) return false;
+        }
+        return true;
+    }).sort(function(a, b){
+        if (a.fecha !== b.fecha) return (a.fecha < b.fecha) ? 1 : -1;
+        return ((a.timestamp||'') < (b.timestamp||'')) ? 1 : -1;
+    });
+}
+
+function render(){
+    filtrados = filtrar();
+    var porTurno = { manana:0, tarde:0, noche:0 };
+    todos.forEach(function(r){ if (r._turnoKey in porTurno) porTurno[r._turnoKey]++; });
+    $('conteos').innerHTML =
+        '<span class="chip">Mañanas: ' + porTurno.manana + '</span>' +
+        '<span class="chip">Tardes: ' + porTurno.tarde + '</span>' +
+        '<span class="chip">Noches: ' + porTurno.noche + '</span>' +
+        '<span class="chip">Mostrando: ' + filtrados.length + '</span>';
+
+    if (!filtrados.length) {
+        $('resultado').innerHTML = '<div class="vacio">No hay registros con los filtros actuales' + (modoLocal ? ' (modo local)' : '') + '.</div>';
+        return;
+    }
+    var html = '<table class="resumen"><thead><tr>' +
+        '<th>Fecha</th><th>Turno</th><th>Operario 1</th><th>Operario 2</th><th>Observaciones</th><th>Campos</th><th></th>' +
+        '</tr></thead><tbody>';
+    filtrados.forEach(function(r, i){
+        var nCampos = r.campos ? Object.keys(r.campos).length : 0;
+        html += '<tr data-i="' + i + '">' +
+            '<td>' + esc(r.fecha || '') + '</td>' +
+            '<td class="turno">' + esc(r.turno || '') + '</td>' +
+            '<td>' + esc(r.operario1 || '') + '</td>' +
+            '<td>' + esc(r.operario2 || '') + '</td>' +
+            '<td>' + esc(r.observaciones_generales || '') + '</td>' +
+            '<td>' + nCampos + '</td>' +
+            '<td style="text-align:right;"><span class="chip">Ver detalle ▾</span></td>' +
+            '</tr>';
+    });
+    html += '</tbody></table>';
+    $('resultado').innerHTML = html;
+    Array.prototype.forEach.call($('resultado').querySelectorAll('tr[data-i]'), function(tr){
+        tr.addEventListener('click', function(){ abrirDetalle(filtrados[parseInt(tr.getAttribute('data-i'), 10)]); });
+    });
+}
+
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function abrirDetalle(r){
+    $('dTitulo').textContent = (r.turno || 'Registro') + ' — ' + (r.fecha || '');
+    $('dMeta').textContent = 'Operario 1: ' + (r.operario1 || '—') +
+        ' · Operario 2: ' + (r.operario2 || '—') +
+        ' · Registrado: ' + (r.timestamp ? new Date(r.timestamp).toLocaleString('es-ES') : '—') +
+        (modoLocal ? ' · modo local' : '');
+    var html = '';
+    if (r.observaciones_generales) {
+        html += '<div class="seccion">Observaciones generales</div><div class="campo" style="grid-column:1/-1;"><span>' + esc(r.observaciones_generales) + '</span></div>';
+    }
+    var campos = r.campos || {};
+    var claves = Object.keys(campos).filter(function(k){ return k !== '_estados'; }).sort();
+    html += '<div class="seccion">Campos (' + claves.length + ')</div><div class="campos">';
+    claves.forEach(function(k){
+        var v = campos[k];
+        var vacio = (v === null || v === undefined || v === '');
+        html += '<div class="campo' + (vacio ? ' vacio-c' : '') + '"><b>' + esc(k) + '</b><span>' + esc(vacio ? '—' : v) + '</span></div>';
+    });
+    html += '</div>';
+    if (campos._estados) {
+        var est = Object.keys(campos._estados).sort();
+        html += '<div class="seccion">Estados SCADA (' + est.length + ')</div><div class="campos">';
+        est.forEach(function(k){
+            html += '<div class="campo"><b>' + esc(k) + '</b><span>' + esc(campos._estados[k]) + '</span></div>';
+        });
+        html += '</div>';
+    }
+    $('dCuerpo').innerHTML = html;
+    $('overlay').style.display = 'flex';
+    $('dExcel').onclick = function(){ exportarLibro([r], 'edar_registro_' + (r.fecha || '') + '.xlsx'); };
+}
+$('dCerrar').addEventListener('click', function(){ $('overlay').style.display = 'none'; });
+$('overlay').addEventListener('click', function(e){ if (e.target === $('overlay')) $('overlay').style.display = 'none'; });
+
+function cabeceras(list){
+    var base = ['Fecha','Turno','Operario 1','Operario 2','Observaciones','Fecha/Hora registro'];
+    var keys = {};
+    list.forEach(function(r){
+        if (r.campos) Object.keys(r.campos).forEach(function(k){ if (k !== '_estados') keys[k] = 1; });
+    });
+    return base.concat(Object.keys(keys).sort());
+}
+
+function aFila(r){
+    var row = {
+        'Fecha': r.fecha || '',
+        'Turno': r.turno || '',
+        'Operario 1': r.operario1 || '',
+        'Operario 2': r.operario2 || '',
+        'Observaciones': r.observaciones_generales || '',
+        'Fecha/Hora registro': r.timestamp || ''
+    };
+    if (r.campos) Object.keys(r.campos).forEach(function(k){ if (k !== '_estados') row[k] = r.campos[k]; });
+    return row;
+}
+
+function hojaDe(regs){
+    var h = cabeceras(regs);
+    var ws = XLSX.utils.json_to_sheet(regs.map(aFila), { header: h });
+    ws['!cols'] = h.map(function(x){ return { wch: Math.min(Math.max(x.length + 4, 10), 30) }; });
+    return ws;
+}
+
+function construirLibro(regs){
+    var wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, hojaDe(regs), 'Todos');
+    TURNOS.forEach(function(t){
+        var sub = regs.filter(function(r){ return r._turnoKey === t.k; });
+        if (sub.length) XLSX.utils.book_append_sheet(wb, hojaDe(sub), t.label);
+    });
+    return wb;
+}
+
+function exportarLibro(regs, nombre){
+    if (!regs.length) { alert('No hay registros para exportar con los filtros actuales.'); return; }
+    XLSX.writeFile(construirLibro(regs), nombre);
+}
+
+$('btnExcel').addEventListener('click', function(){
+    exportarLibro(filtrar(), 'edar_datos_todos_turnos_' + new Date().toISOString().split('T')[0] + '.xlsx');
+});
+$('btnRefrescar').addEventListener('click', function(){
+    mostrarAviso('');
+    cargarDatos(function(err){
+        if (err) mostrarAviso('No se pudo leer el servidor (' + err.message + ').');
+        else if (modoLocal) mostrarAviso('Modo local (sin servidor): solo se ven los registros guardados en este equipo.');
+        render();
+    });
+});
+['fDesde','fHasta','fTurno','fTexto'].forEach(function(id){
+    $(id).addEventListener('input', render);
+    $(id).addEventListener('change', render);
+});
+
+if (sessionStorage.getItem('edar_admin') === '1') entrar();
+</script>
+</body>
+</html>

@@ -9,6 +9,7 @@ Aplicación web local para la recogida digital de datos de mantenimiento prevent
 ```
 EDAR/
 ├── index.html              # Portal selector de turno
+├── admin.html              # Consola de administración (los 3 turnos, con contraseña)
 ├── README.md               # Este archivo
 ├── backups/                # Backups por día (JSON) para importar en cada checklist
 │   └── backup_2026-09-27_{manana,tarde,noche}.json
@@ -90,6 +91,15 @@ Para que varios trabajadores compartan los mismos datos desde sus tablets, el re
 
 - Los datos viven en Netlify Blobs (tienda `checklists-edar`), no en el repo; respaldo manual con **Exportar Excel/JSON**.
 - La API no tiene contraseña: cualquiera con la URL puede leer/escribir. Para uso interno basta; si queréis, se añade un token.
+
+## Consola de administración (`admin.html`)
+
+Para que el admin/jefe vea **los 3 turnos desde cualquier equipo** sin abrir cada checklist: botón **🔒 Consola Admin** en el portal → `admin.html` (credenciales `admin` / `edar2026`, misma que la pestaña Registros).
+
+- **Datos:** consulta `GET /api/datos?turno=manana|tarde|noche` (Netlify Blobs) y los mezcla en una sola vista; botón **⟳ Actualizar** para refrescar. Si se abre con `file://` (sin publicar) muestra un aviso y solo los registros de ese equipo.
+- **Vista:** tabla resumen (Fecha, Turno, Operarios, Observaciones, nº de campos) + **detalle al pulsar una fila** (todos los campos y estados SCADA de ese registro).
+- **Filtros:** fecha desde/hasta, turno, texto libre (operario u observación); chips con el recuento por turno.
+- **Excel:** botón **⬇ Excel (3 turnos)** descarga un único `.xlsx` con hoja **Todos** (todo mezclado, con columna Turno) + hojas **Mañanas**, **Tardes** y **Noches**. Desde el detalle también se puede exportar el Excel de un solo registro.
 
 ## Tecnologías
 
